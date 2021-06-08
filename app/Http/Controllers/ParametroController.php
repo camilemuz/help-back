@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Cargo;
 use App\Models\Categoria;
 use App\Models\Departamento;
+use App\Models\Division;
 use App\Models\Municipio;
 use App\Models\Rol;
 use App\Models\Sucursal;
@@ -63,10 +64,10 @@ class ParametroController extends Controller
         ]);
     }
 
-    public function rol(){
+    public function division(){
         return response()->json([
             'respuesta' => true,
-            'roles' => Rol::all()
+            'divisiones' => Division::all()
         ]);
     }
 
@@ -74,6 +75,13 @@ class ParametroController extends Controller
         return response()->json([
             'respuesta' => true,
             'cargos' => Cargo::all()
+        ]);
+    }
+
+    public function rol(){
+        return response()->json([
+            'respuesta' => true,
+            'roles' => Rol::all()
         ]);
     }
 }

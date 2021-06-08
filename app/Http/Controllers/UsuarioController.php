@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Division;
+use App\Models\Rol;
 use App\Models\Usuario;
 use App\User;
 use Illuminate\Http\Request;
@@ -21,8 +23,9 @@ class UsuarioController extends Controller
         $usuario->ap_materno = $request->input('ap_materno');
         $usuario->email = $request->input('email');
         $usuario->password = bcrypt($request->input('password'));
-        $usuario->rol_id_rol = $request->input('rol_id_rol');
+        $usuario->rol_id_rol = Rol::FUNCIONARIO;
         $usuario->cargo_id_cargo = $request->input('cargo_id_cargo');
+        $usuario->division_id_division = Division::OTROS;
         $usuario->save();
 
         if ($this->loginAfterSignUp) return $this->login($request);
@@ -45,7 +48,7 @@ class UsuarioController extends Controller
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Inicio de sesion autorizado',
-            'token' => $jwt_token
+            'token' => $jwt_token,
         ]);
     }
 
@@ -57,11 +60,10 @@ class UsuarioController extends Controller
             $secreto = config('jwt.secret');
             $jws = SimpleJWS::load($request->input('token'));
             if (!$jws->isValid($secreto)){
-                return  response()->json([
-                    'respuesta' => false,
-                    'message' => 'Al usuario no se le pudo cerrar la sesión'
-                ]);
+
             }
+
+            JWTAuth::invalidate($request->input('token'));
             return response()->json([
                 'respuesta' => true,
                 'mensaje' => 'Cierre de sesión exitoso'
@@ -74,11 +76,92 @@ class UsuarioController extends Controller
         }
     }
 
-    public function getAuthUser(Request $request){
-        $usuario = JWTAuth::authenticate($request->input('token'));
-        return  response()->json([
+    public function recursoUsuario(Request $request)
+    {
+        if ($this->validaToken($request->input('token'))) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Tiempo de sesión ha terminado'
+            ]);
+        }
+        $usuario = User::where('email', $request->input('email'))->first();
+        return response()->json([
             'respuesta' => true,
-            'usuario' => $usuario
+            'id_rol' => $usuario->rol_id_rol
         ]);
     }
+
+    private function validaToken($token){
+        $secreto = config('jwt.secret');
+        $jws = SimpleJWS::load($token);
+        if (!$jws->isValid($secreto)){
+            return true;
+        }
+        return false;
+    }
+
+    //para el administrador
+    public function index(Request $request){
+        if (($this->obtieneIdUsuario($request->input('email'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }
+        $users = User::where('baja_logica', false)
+            ->orderBy('id_usuario', 'desc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'users' => $users
+        ]);
+    }
+
+    public function store($id, Request $request ){
+        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }
+        $user = User::findOrFail($id);
+        $user->nombre = $request->input('nombre');
+        $user->ap_paterno = $request->input('ap_paterno');
+        $user->ap_materno = $request->input('ap_materno');
+        $user->ap_materno = $request->input('ap_materno');
+        $user->rol_id_rol = $request->input('rol_id_rol');
+        $user->cargo_id_cargo = $request->input('cargo_id_cargo');
+        $user->division_id_division = $request->input('division_id_division');
+        $user->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Usuario editado con exito'
+        ]);
+    }
+
+    public function eliminar(Request $request){
+        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }
+        $user = User::findOrFail($request->input('id_usuario'));
+        $user->baja_logica = true;
+        $user->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Usuario eliminado con exito'
+        ]);
+    }
+
+    private function obtieneIdUsuario($email, $idRol){
+        $usuario = User::where('email', $email)
+            ->where('baja_logica', false)
+            ->where('rol_id_rol', $idRol)
+            ->first();
+        if ($usuario == null) return null;
+        else return $usuario->id_usuario;
+    }
+
 }
