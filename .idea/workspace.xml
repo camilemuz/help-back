@@ -4,16 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/app/Http/Controllers/SolicitudRequerimientoController.php" line="42" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7049b4b-771a-4625-a9a3-b000aecf39b4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ParametroController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ParametroController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SolicitudRequerimientoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SolicitudRequerimientoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TicketController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TicketController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Requerimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Requerimiento.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Ticket.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Ticket.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
-    </list>
+    <list default="true" id="d7049b4b-771a-4625-a9a3-b000aecf39b4" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
