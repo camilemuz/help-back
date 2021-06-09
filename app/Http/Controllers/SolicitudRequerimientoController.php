@@ -79,7 +79,7 @@ class SolicitudRequerimientoController extends Controller
     private function obtieneIdUsuario($email){
         $usuario = User::where('email', $email)
             ->where('baja_logica', false)
-            ->where('rol_id_rol', Rol::FUNCIONARIO)
+            /*->where('rol_id_rol', Rol::FUNCIONARIO)*/
             ->first();
         if ($usuario == null) return null;
         else return $usuario->id_usuario;

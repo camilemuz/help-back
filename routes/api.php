@@ -21,6 +21,10 @@ Route::post('/recurso_usuario', 'UsuarioController@recursoUsuario');
 
 Route::group(['prefix' => 'parametros'], function() {
     Route::get('categoria', 'ParametroController@categoria');
+    Route::post('indexcat', 'ParametroController@indexcat');
+    Route::post('storecat', 'ParametroController@storecat');
+    Route::put('updatecat/{id}', 'ParametroController@updateCategoria');
+    Route::post('eliminarcat', 'ParametroController@eliminarCategoria');
     Route::get('tipo_requerimiento/{id}', 'ParametroController@tipoRequerimiento');
     Route::get('municipio', 'ParametroController@municipio');
     Route::get('sucursal/{id}', 'ParametroController@sucursal');
@@ -40,6 +44,7 @@ Route::group(['prefix' => 'agente'], function() {
     Route::post('elegir_ticket', 'TicketController@elegirTicket');
     Route::post('tomar_ticket', 'TicketController@tomarTicket');
     Route::post('terminar_ticket', 'TicketController@terminarTicket');
+    Route::post('historico', 'TicketController@historico');
 });
 Route::group(['prefix' => 'admin'], function() {
     Route::put('store/{id}', 'UsuarioController@store');

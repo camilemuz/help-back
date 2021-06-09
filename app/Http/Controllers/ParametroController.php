@@ -14,9 +14,71 @@ use Illuminate\Http\Request;
 class ParametroController extends Controller
 {
     public function categoria(){
+
+
         return response()->json([
             'respuesta' => true,
             'categorias' => Categoria::all()
+        ]);
+
+
+    }
+
+    public function indexcat (Request $request){
+        $categoria = Categoria::where('baja_logica', false)
+            ->orderBy('id_categoria', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'categorias' => $categoria
+        ]);
+    }
+    public function storecat(Request $request)
+    {
+        $this->validate($request, [
+            'cod' => ['required'],
+            'categoria' => ['required'],
+
+        ]);
+        $categoria = new Categoria();
+        $categoria->cod = $request->cod;
+        $categoria->categoria = $request->categoria;
+
+        $categoria->save();
+
+        return response()->json(['data' => $categoria], 201);
+    }
+    public function updateCategoria(Request $request, $id)
+    {
+        $this->validate($request, [
+            'cod' => [],
+            'categoria' => [],
+
+        ]);
+        $categoria = Categoria::findOrFail($id);
+        $categoria->cod = $request->input('cod');
+        $categoria->categoria = $request->input('categoria');
+        $categoria->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Categoria editada con éxito'
+        ]);
+    }
+
+    public function eliminarCategoria(Request $request)
+    {
+        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }
+        $categoria = Categoria::findOrFail($request->input('id_categoria'));
+        $categoria->baja_logica = true;
+        $categoria->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Categoria eliminada con éxito'
         ]);
     }
 
