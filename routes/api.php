@@ -28,6 +28,7 @@ Route::group(['prefix' => 'parametros'], function() {
     Route::get('tipo_requerimiento/{id}', 'ParametroController@tipoRequerimiento');
     Route::get('municipio', 'ParametroController@municipio');
     Route::get('indexmunicipio', 'ParametroController@municipio');
+    Route::get('indssgtexmunicipio', 'ParametroController@municipio');
 
     Route::get('sucursal/{id}', 'ParametroController@sucursal');
     Route::get('departamento', 'ParametroController@departamento');
