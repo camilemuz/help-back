@@ -164,4 +164,24 @@ class UsuarioController extends Controller
         else return $usuario->id_usuario;
     }
 
+    public function registroAdmin(Request $request)
+    {
+        $usuario = new User();
+        $usuario->nombre = $request->input('nombre');
+        $usuario->ap_paterno = $request->input('ap_paterno');
+        $usuario->ap_materno = $request->input('ap_materno');
+        $usuario->email = $request->input('email');
+        $usuario->password = bcrypt($request->input('password'));
+        $usuario->rol_id_rol = $request->input('rol_id_rol');
+        $usuario->cargo_id_cargo = $request->input('cargo_id_cargo');
+        $usuario->division_id_division = $request->input('division_id_division');
+        $usuario->save();
+
+        if ($this->loginAfterSignUp) return $this->login($request);
+        return  response()->json([
+            'respuesta' => true,
+            'usuario' => $usuario
+        ]);
+    }
+
 }

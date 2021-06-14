@@ -25,13 +25,23 @@ Route::group(['prefix' => 'parametros'], function() {
     Route::post('storecat', 'ParametroController@storecat');
     Route::put('updatecat/{id}', 'ParametroController@updateCategoria');
     Route::post('eliminarcat', 'ParametroController@eliminarCategoria');
+   
     Route::get('tipo_requerimiento/{id}', 'ParametroController@tipoRequerimiento');
+   
     Route::get('municipio', 'ParametroController@municipio');
-    Route::get('indexmunicipio', 'ParametroController@municipio');
-    Route::get('indssgtexmunicipio', 'ParametroController@municipio');
+    Route::post('indexmun', 'ParametroController@indexmunicipio');
+    Route::post('storemun', 'ParametroController@storemunicipio');
+    Route::put('updatemun/{id}', 'ParametroController@updatemunicipio');
+    Route::post('eliminarmun', 'ParametroController@eliminarmunicipio');
 
     Route::get('sucursal/{id}', 'ParametroController@sucursal');
+    
     Route::get('departamento', 'ParametroController@departamento');
+    Route::post('indexdpto', 'ParametroController@indexdepartamento');
+    Route::post('storedpto', 'ParametroController@storedepartamento');
+    Route::put('updatedpto/{id}', 'ParametroController@updatedepartamento');
+    Route::post('eliminardpto', 'ParametroController@eliminardepartamento');
+    
     Route::get('division', 'ParametroController@division');
     Route::get('cargo', 'ParametroController@cargo');
     Route::get('rol', 'ParametroController@rol');
@@ -53,4 +63,5 @@ Route::group(['prefix' => 'admin'], function() {
     Route::put('store/{id}', 'UsuarioController@store');
     Route::post('index', 'UsuarioController@index');
     Route::post('eliminar', 'UsuarioController@eliminar');
+    Route::post('registroAdmin', 'UsuarioController@registroAdmin');
 });

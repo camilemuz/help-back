@@ -97,12 +97,72 @@ class ParametroController extends Controller
         ]);
     }
 
+
+
     public function municipio(){
         return response()->json([
             'respuesta' => true,
             'municipios' => Municipio::all()
         ]);
     }
+ public function indexmunicipio (Request $request){
+        $municipio = Municipio::where('baja_logica', false)
+            ->orderBy('id_municipio', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'municipios' => $municipio
+        ]);
+    }
+    public function storemunicipio(Request $request)
+    {
+        $this->validate($request, [
+            'cod' => ['required'],
+            'municipio' => ['required'],
+
+        ]);
+        $municipio = new Municipio();
+        $municipio->cod = $request->cod;
+        $municipio->municipio = $request->municipio;
+
+        $categoria->save();
+
+        return response()->json(['data' => $municipio], 201);
+    }
+    public function updatemunicipio(Request $request, $id)
+    {
+        $this->validate($request, [
+            'cod' => [],
+            'municipio' => [],
+
+        ]);
+        $municipio = Municipio::findOrFail($id);
+        $municipio->cod = $request->input('cod');
+        $municipio->municipio = $request->input('municipio');
+        $municipio->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Municipio editado con éxito'
+        ]);
+    }
+
+    public function eliminarmunicipio(Request $request)
+    {
+        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }
+        $municipio = Municipio::findOrFail($request->input('id_municipio'));
+        $municipio->baja_logica = true;
+        $municipio->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Municipio eliminado con éxito'
+        ]);
+    }
+
 
     public function sucursal($id){
         $sucursales = Sucursal::where('municipio_id_lugar', $id)
@@ -125,6 +185,65 @@ class ParametroController extends Controller
             'departamentos' => Departamento::all()
         ]);
     }
+    public function indexdepartamento (Request $request){
+        $departamento = Departamento::where('baja_logica', false)
+            ->orderBy('id_departamento', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'departamentos' => $departamento
+        ]);
+    }
+    public function storedepartamento(Request $request)
+    {
+        $this->validate($request, [
+            'cod' => ['required'],
+            'departamento' => ['required'],
+
+        ]);
+        $departamento = new Departamento();
+        $departamento->cod = $request->cod;
+        $departamento->departamento = $request->departamento;
+
+        $departamento->save();
+
+        return response()->json(['data' => $departamento], 201);
+    }
+    public function updatedepartamento(Request $request, $id)
+    {
+        $this->validate($request, [
+            'cod' => [],
+            'departamento' => [],
+
+        ]);
+        $departamento = Departamento::findOrFail($id);
+        $departamento->cod = $request->input('cod');
+        $departamento->departamento = $request->input('departamento');
+        $departamento->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Departamento editado con éxito'
+        ]);
+    }
+
+    public function eliminardepartamento(Request $request)
+    {
+        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }
+        $departamento = Departamento::findOrFail($request->input('id_departamento'));
+        $departamento->baja_logica = true;
+        $departamento->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Departamento eliminado con éxito'
+        ]);
+    }
+
+
 
     public function division(){
         return response()->json([
