@@ -107,7 +107,7 @@ class ParametroController extends Controller
     }
  public function indexmunicipio (Request $request){
         $municipio = Municipio::where('baja_logica', false)
-            ->orderBy('id_municipio', 'asc')
+            ->orderBy('id_lugar', 'asc')
             ->get();
         return response()->json([
             'respuesta' => true,
@@ -118,12 +118,12 @@ class ParametroController extends Controller
     {
         $this->validate($request, [
             'cod' => ['required'],
-            'municipio' => ['required'],
+            'lugar' => ['required'],
 
         ]);
         $municipio = new Municipio();
         $municipio->cod = $request->cod;
-        $municipio->municipio = $request->municipio;
+        $municipio->lugar = $request->lugar;
 
         $categoria->save();
 
@@ -133,12 +133,12 @@ class ParametroController extends Controller
     {
         $this->validate($request, [
             'cod' => [],
-            'municipio' => [],
+            'lugar' => [],
 
         ]);
         $municipio = Municipio::findOrFail($id);
         $municipio->cod = $request->input('cod');
-        $municipio->municipio = $request->input('municipio');
+        $municipio->lugar = $request->input('lugar');
         $municipio->save();
         return response()->json([
             'respuesta' => true,
@@ -154,7 +154,7 @@ class ParametroController extends Controller
                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
             ]);
         }
-        $municipio = Municipio::findOrFail($request->input('id_municipio'));
+        $municipio = Municipio::findOrFail($request->input('id_lugar'));
         $municipio->baja_logica = true;
         $municipio->save();
         return response()->json([
