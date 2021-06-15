@@ -20,8 +20,6 @@ class ParametroController extends Controller
             'respuesta' => true,
             'categorias' => Categoria::all()
         ]);
-
-
     }
 
     public function indexcat (Request $request){
@@ -125,7 +123,7 @@ class ParametroController extends Controller
         $municipio->cod = $request->cod;
         $municipio->lugar = $request->lugar;
 
-        $categoria->save();
+        $municipio->save();
 
         return response()->json(['data' => $municipio], 201);
     }
