@@ -44,7 +44,9 @@ class ParametroController extends Controller
 
         $categoria->save();
 
-        return response()->json(['data' => $categoria], 201);
+        return response()->json([
+            'respuesta'=>true,
+            'categoria'=>$categoria]);
     }
     public function updateCategoria(Request $request, $id)
     {
@@ -80,6 +82,7 @@ class ParametroController extends Controller
         ]);
     }
 
+    
     public function tipoRequerimiento($id){
         $tipoRequerimientos = TipoRequerimiento::where('categoria_id_categoria', $id)
             ->get();
@@ -125,7 +128,10 @@ class ParametroController extends Controller
 
         $municipio->save();
 
-        return response()->json(['data' => $municipio], 201);
+        return response()->json([
+            'respuesta'=>true,
+            'municipio'=>$municipio
+        ]);
     }
     public function updatemunicipio(Request $request, $id)
     {
@@ -177,6 +183,7 @@ class ParametroController extends Controller
         ]);
     }
 
+
     public function departamento(){
         return response()->json([
             'respuesta' => true,
@@ -205,7 +212,10 @@ class ParametroController extends Controller
 
         $departamento->save();
 
-        return response()->json(['data' => $departamento], 201);
+        return response()->json([
+            'respuesta'=>true,
+            'departamento'=> $departamento
+        ]);
     }
     public function updatedepartamento(Request $request, $id)
     {
