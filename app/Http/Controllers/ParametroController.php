@@ -82,6 +82,7 @@ class ParametroController extends Controller
         ]);
     }
 
+
     
     public function tipoRequerimiento($id){
         $tipoRequerimientos = TipoRequerimiento::where('categoria_id_categoria', $id)
@@ -95,6 +96,73 @@ class ParametroController extends Controller
         return response()->json([
             'respuesta' => false,
             'mensaje' => 'No se ha encontrado registros'
+        ]);
+    }
+    public function indextiporeq (Request $request){
+        $tipoRequerimiento = TipoRequerimiento::where('baja_logica', false)
+            ->orderBy('id_tipo_req', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'tipoRequerimientos' => $tipoRequerimiento
+        ]);
+    }
+    public function storetiporeq(Request $request)
+    {
+        $this->validate($request, [
+            'cod' => ['required'],
+            'sub_cat' => ['required'],
+            'categoria_id_categoria' => ['required'],
+            'division_id_division' => ['required'],
+
+        ]);
+        $tipoRequerimiento = new tipoRequerimiento();
+        $tipoRequerimiento->cod = $request->cod;
+        $tipoRequerimiento->sub_cat = $request->sub_cat;
+        $tipoRequerimiento->categoria_id_categoria = $request->categoria_id_categoria;
+        $tipoRequerimiento->division_id_division = $request->division_id_division;
+
+        $tipoRequerimiento->save();
+
+        return response()->json([
+            'respuesta'=>true,
+            'TipoRequerimiento'=>$tipoRequerimiento]);
+    }
+    public function updatetiporeq(Request $request, $id)
+    {
+        $this->validate($request, [
+            'cod' => [],
+            'sub_cat' => [],
+            'categoria_id_categoria' => [],
+            'division_id_division' => [],
+
+        ]);
+        $tipoRequerimiento = TipoRequerimiento::findOrFail($id);
+        $tipoRequerimiento->cod = $request->input('cod');
+        $tipoRequerimiento->sub_cat = $request->input('sub_cat');
+        $tipoRequerimiento->categoria_id_categoria = $request->input('categoria_id_categoria');
+        $tipoRequerimiento->division_id_division = $request->input('division_id_division');
+        $tipoRequerimiento->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Sub categoría editada con éxito'
+        ]);
+    }
+
+    public function eliminartiporeq (Request $request)
+    {
+        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }
+        $tipoRequerimiento = TipoRequerimiento::findOrFail($request->input('id_tipo_req'));
+        $tipoRequerimiento->baja_logica = true;
+        $tipoRequerimiento->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Categoria eliminada con éxito'
         ]);
     }
 
