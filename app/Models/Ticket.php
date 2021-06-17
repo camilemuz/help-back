@@ -68,6 +68,10 @@ class Ticket extends Model
                             d.categoria,
                             c.sub_cat,
                             a.estado_id_estado,
+
+                            g.prioridad,
+                            h.prioridad_id_prioridad,
+
                             (select estado from public.estado where id_estado = a.estado_id_estado limit 1) estado,
                             c.division_id_division,
                             (select division from public.division where id_division = c.division_id_division limit 1),
@@ -80,12 +84,19 @@ class Ticket extends Model
                             limit 1) usuario,
                             b.descripcion,
                             (select departamento from public.departamento where b.departamento_id_departamento = id_departamento limit 1) departamento,
-                            (select sucursal from public.sucursal where b.sucursal_id_sucursal = id_sucursal limit 1) sucursal
+                            (select sucursal from public.sucursal where b.sucursal_id_sucursal = id_sucursal limit 1) sucursal,
+                            
+                            (select prioridad from public.prioridad where h.prioridad_id_prioridad =id_prioridad limit 1) prioridad,
+                            from public.cargo h on y cargo_id_cargo = h.id_cargo 
+
                     from public.ticket a        
                     inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
                     inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
                     inner join public.categoria d on c.categoria_id_categoria = d.id_categoria
                     inner join public.usuario e on b.usuario_id_usuario = e.id_usuario
+
+                    inner join public.prioirdad g on h.prioridad_id_prioridad= g.id_prioridad
+
                     where a.baja_logica is false
                     and a.activo is true 
                     and b.usuario_id_usuario = ?
