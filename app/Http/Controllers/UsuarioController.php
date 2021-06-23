@@ -183,5 +183,11 @@ class UsuarioController extends Controller
             'usuario' => $usuario
         ]);
     }
+    public function usuarios(){
+        return response()->json([
+            'respuesta' => true,
+            'usuarios' => Usuarios::all()
+        ]);
+    }
 
 }

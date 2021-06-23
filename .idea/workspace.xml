@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="d7049b4b-771a-4625-a9a3-b000aecf39b4" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Ticket.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Ticket.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SolicitudRequerimientoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SolicitudRequerimientoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UsuarioController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UsuarioController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -247,7 +249,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../help-front" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
@@ -281,6 +283,8 @@
       <workItem from="1623121700972" duration="8439000" />
       <workItem from="1623355502143" duration="525000" />
       <workItem from="1623956578114" duration="694000" />
+      <workItem from="1624386187628" duration="68000" />
+      <workItem from="1624460856514" duration="4348000" />
     </task>
     <servers />
   </component>

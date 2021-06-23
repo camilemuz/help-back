@@ -96,4 +96,60 @@ class SolicitudRequerimientoController extends Controller
             }
         }
     }
+
+
+    public function solicitudAgente(Request $request){
+        //validamos el token enviado
+        if ($this->validaToken($request->input('token'))){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Tiempo de sesión ha terminado'
+            ]);
+        }
+
+        if ($this->obtieneIdUsuario($request->input('email')) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para el registro'
+            ]);
+        }
+
+
+        $requerimiento = new Requerimiento();
+        $requerimiento->descripcion = $request->input('descripcion');
+        $requerimiento->interno = $request->input('interno');
+        $requerimiento->usuario_id_usuario = $this->obtieneIdUsuario($request->input('email'));
+        $requerimiento->departamento_id_departamento = $request->input('departamento_id_departamento');
+        $requerimiento->tipo_requerimiento_id_tipo_req = $request->input('tipo_requerimiento_id_tipo_req');
+        $requerimiento->sucursal_id_sucursal = $request->input('sucursal_id_sucursal');
+        $respuesta = $requerimiento->save();
+
+        if ($respuesta){
+            //a la par se crea el TIcket en espera
+            $ticket = new Ticket();
+            //momentaneo
+            $ticket->numero = $this->generarCodigo();
+            $ticket->estado_id_estado = /*Estado::EN_ESPERA;*/$requerimiento->estado_id_estado;
+            $ticket->requerimiento_id_requerimiento = $requerimiento->id_requerimiento;
+            //TODO
+            $ticket->comentarios = '';
+            $respuesta = $ticket->save();
+            if ($respuesta){
+                return response()->json([
+                    'respuesta' => true,
+                    'requerimiento' => $requerimiento
+                ]);
+            }
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Error al guardar los datos en la Base de Datos'
+            ]);
+
+        }
+        return response()->json([
+            'respuesta' => false,
+            'mensaje' => 'Error al guardar los datos en la Base de Datos'
+        ]);
+    }
+
 }
