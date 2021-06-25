@@ -184,9 +184,12 @@ class UsuarioController extends Controller
         ]);
     }
     public function usuarios(){
+        $usuario = User::where('baja_logica', false)
+            ->orderBy('id_usuario', 'asc')
+            ->get();
         return response()->json([
             'respuesta' => true,
-            'usuarios' => Usuarios::all()
+            'usuarios' => $usuario
         ]);
     }
 
