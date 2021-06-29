@@ -203,7 +203,7 @@ class ParametroController extends Controller
 
         return response()->json([
             'respuesta'=>true,
-            'municipio'=>$municipio
+            'mensaje'=>'Municipio creado con éxito'
         ]);
     }
     public function updatemunicipio(Request $request, $id)
@@ -309,12 +309,12 @@ class ParametroController extends Controller
 
     public function eliminardepartamento(Request $request)
     {
-        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+        /*if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
             return  response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
             ]);
-        }
+        }*/
         $departamento = Departamento::findOrFail($request->input('id_departamento'));
         $departamento->baja_logica = true;
         $departamento->save();
