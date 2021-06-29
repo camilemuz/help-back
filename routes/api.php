@@ -33,7 +33,7 @@ Route::group(['prefix' => 'parametros'], function() {
     Route::post('eliminarmun', 'ParametroController@eliminarmunicipio');
 
     Route::get('municipio', 'ParametroController@municipio');
-    Route::post('indexmun', 'ParametroController@indexmunicipio');
+    Route::get('indexmun', 'ParametroController@indexmunicipio');
     Route::post('storemun', 'ParametroController@storemunicipio');
     Route::put('updatemun/{id}', 'ParametroController@updatemunicipio');
     Route::post('eliminarmun', 'ParametroController@eliminarmunicipio');

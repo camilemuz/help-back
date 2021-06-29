@@ -225,12 +225,12 @@ class ParametroController extends Controller
 
     public function eliminarmunicipio(Request $request)
     {
-        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+        /*if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
             return  response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
             ]);
-        }
+        }*/
         $municipio = Municipio::findOrFail($request->input('id_lugar'));
         $municipio->baja_logica = true;
         $municipio->save();
