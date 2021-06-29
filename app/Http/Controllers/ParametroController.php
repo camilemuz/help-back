@@ -333,12 +333,78 @@ class ParametroController extends Controller
         ]);
     }
 
+
     public function cargo(){
         return response()->json([
             'respuesta' => true,
             'cargos' => Cargo::all()
         ]);
     }
+    public function indexcargo (Request $request){
+        $cargo = Cargo::where('baja_logica', false)
+            ->orderBy('id_cargo', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'categorias' => $cargo
+        ]);
+    }
+    public function storecargo(Request $request)
+    {
+        $this->validate($request, [
+            'cod' => ['required'],
+            'cargo' => ['required'],
+            'prioridad_id_prioridad' => ['requered']
+
+        ]);
+        $cargo = new Cargo();
+        $cargo->cod = $request->cod;
+        $cargo->cargo = $request->cargo;
+        $cargo->prioridad_id_prioridad = $request->prioridad_id_prioridad;
+
+        $cargo->save();
+
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Cargo creado con éxito'
+        ]);
+    }
+    public function updatecargo(Request $request, $id)
+    {
+        $this->validate($request, [
+            'cod' => [],
+            'cargo' => [],
+            'prioridad_id_prioridad' => []
+
+        ]);
+        $cargo = Cargo::findOrFail($id);
+        $cargo->cod = $request->input('cod');
+        $cargo->categoria = $request->input('categoria');
+        $cargo->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Cargo editado con éxito'
+        ]);
+    }
+
+    public function eliminarcargo(Request $request)
+    {
+        /* if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+             return  response()->json([
+                 'respuesta' => false,
+                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+             ]);
+         }*/
+        $cargo = Cargo::findOrFail($request->input('id_cargo'));
+        $cargo->baja_logica = true;
+        $cargo->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Cargo eliminado con éxito'
+        ]);
+    }
+
+
 
     public function rol(){
         return response()->json([
