@@ -9,17 +9,21 @@ use App\Models\Municipio;
 use App\Models\Rol;
 use App\Models\Sucursal;
 use App\Models\TipoRequerimiento;
+use App\User;
 use Illuminate\Http\Request;
 
 class ParametroController extends Controller
 {
     public function categoria(){
-
-
+        $categoria = Categoria::where('baja_logica', false)
+            ->orderBy('id_categoria', 'asc')
+            ->get();
         return response()->json([
             'respuesta' => true,
-            'categorias' => Categoria::all()
+            'categorias' => $categoria
         ]);
+
+
     }
 
     public function indexcat (Request $request){
@@ -45,8 +49,9 @@ class ParametroController extends Controller
         $categoria->save();
 
         return response()->json([
-            'respuesta'=>true,
-            'categoria'=>$categoria]);
+            'respuesta' => true,
+            'mensaje' => 'Categoria creada con éxito'
+        ]);
     }
     public function updateCategoria(Request $request, $id)
     {
@@ -67,12 +72,12 @@ class ParametroController extends Controller
 
     public function eliminarCategoria(Request $request)
     {
-        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+       /* if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
             return  response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
             ]);
-        }
+        }*/
         $categoria = Categoria::findOrFail($request->input('id_categoria'));
         $categoria->baja_logica = true;
         $categoria->save();
@@ -83,7 +88,7 @@ class ParametroController extends Controller
     }
 
 
-    
+
     public function tipoRequerimiento($id){
         $tipoRequerimientos = TipoRequerimiento::where('categoria_id_categoria', $id)
             ->get();

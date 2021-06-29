@@ -27,7 +27,7 @@ Route::group(['prefix' => 'parametros'], function() {
     Route::post('eliminarcat', 'ParametroController@eliminarCategoria');
 
     Route::get('tipo_requerimiento/{id}', 'ParametroController@tipoRequerimiento');
-    Route::post('indextiporeq', 'ParametroController@indextiporeq');
+    Route::get('indextiporeq', 'ParametroController@indextiporeq');
     Route::post('storetiporeq', 'ParametroController@storetiporeq');
     Route::put('updatetiporeq/{id}', 'ParametroController@updatetiporeq');
     Route::post('eliminarmun', 'ParametroController@eliminarmunicipio');
