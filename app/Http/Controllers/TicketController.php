@@ -52,8 +52,10 @@ class TicketController extends Controller
 
     public function tomarTicket(Request $request){
         //validando que solamente un AGENTE puede tomar un ticket
-        if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::AGENTE)) == null){
-            return  response()->json([
+        /*if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::AGENTE)) == null){
+            return  response()->json([*/
+        if (($usuario = $this->obtieneIdUsuario($request->input('email'), Rol::AGENTE)) == null) {
+            return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Usuario no autorizado para la asignacion de Ticket'
             ]);
@@ -72,7 +74,8 @@ class TicketController extends Controller
         $ticketActivo->save();
         //Completamos en la tabla Asignado
         $asignado = new Asignado();
-        $asignado->usuario_id_usuario = $idUsuario;
+        /*$asignado->usuario_id_usuario = $idUsuario;*/
+        $asignado->usuario_id_usuario = $usuario->id_usuario;
         $asignado->ticket_id_ticket = $ticketActivo->id_ticket;
         $asignado->fecha = date('d/m/Y');
         //TODO

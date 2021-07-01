@@ -174,9 +174,15 @@ class ParametroController extends Controller
 
 
     public function municipio(){
+        $municipio = Municipio::where('baja_logica', false)
+            ->orderBy('id_lugar', 'asc')
+            ->get();
         return response()->json([
             'respuesta' => true,
-            'municipios' => Municipio::all()
+            'municipios' => $municipio
+       /* return response()->json([
+            'respuesta' => true,
+            'municipios' => Municipio::all()*/
         ]);
     }
  public function indexmunicipio (Request $request){
