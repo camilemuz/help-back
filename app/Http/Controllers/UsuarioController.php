@@ -164,6 +164,19 @@ class UsuarioController extends Controller
         else return $usuario->id_usuario;
     }
 
+    public function listarAgentes()
+    {
+        $agentes = User::where('rol_id_rol', Rol::AGENTE)
+            ->where('baja_logica', false)
+            ->orderBy('ap_paterno')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'agentes' => $agentes
+        ]);
+    }
+
+
     public function registroAdmin(Request $request)
     {
         $usuario = new User();
