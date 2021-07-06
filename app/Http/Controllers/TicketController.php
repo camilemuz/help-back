@@ -83,7 +83,7 @@ class TicketController extends Controller
         //se prepara el correo para el solicitante a su cuenta
         $detalles = [
             'titulo' => 'Alerta',
-            'body' => "Su solicitud fue tomada por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno"
+            'body' => " $ticketActivo->comentarios Su solicitud fue tomada por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno"
         ];
         $requerimiento = Requerimiento::findOrFail($ticket->requerimiento_id_requerimiento);
         $usuarioRequerimiento = User::findOrFail($requerimiento->usuario_id_usuario);
