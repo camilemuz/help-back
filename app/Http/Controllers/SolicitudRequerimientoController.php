@@ -175,9 +175,10 @@ class SolicitudRequerimientoController extends Controller
             $respuesta = $ticket->save();
             $detalles = [
                 'titulo' => 'Confirmación',
-                'body' => "Su solicitud fue creado con éxito con la descripción: $requerimiento-> descripcion. Se le mandará un correo cuando un agente haya tomado su Requerimiento"
+                'body' => "Su solicitud fue creada con éxito. Se le mandará un correo cuando un agente haya tomado su Requerimiento.
+                 Con la descripción: $requerimiento->descripcion y el número de su ticket es: $ticket->numero"
             ];
-            \Mail::to($request->input('usuario_id_usuario'))->send(new \App\Mail\InvoiceMail($detalles));
+            \Mail::to($request->input('email'))->send(new \App\Mail\InvoiceMail($detalles));
 
             if ($respuesta){
                 return response()->json([
