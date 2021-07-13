@@ -17,6 +17,7 @@ class CreateTableRequerimiento extends Migration
             $table->id();
             $table->string('descripcion');
             $table->string('interno');
+            $table->string('media');
             $table->bigInteger('usuario_id')->unsigned();
             $table->foreign('usuario_id')->references('id')->on('usuario');
             $table->bigInteger('departamento_id')->unsigned();

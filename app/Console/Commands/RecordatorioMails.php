@@ -49,21 +49,11 @@ class RecordatorioMails extends Command
     public function handle()
     {
         
-        $totalTickets = \DB::connection('help')->select(
-            "(select a.id_ticket, a.numero, a.estado_id_estado, a.requerimiento_id_requerimiento,
-            a.fecha_registro, a.comentarios, a.activo,
-c.nombre, c.ap_paterno, c.ap_materno, c.id_usuario
-    from public.ticket a
-    inner join public.asignado b on a.id_ticket = b.ticket_id_ticket
-    inner join public.usuario c on b.usuario_id_usuario = c.id_usuario
-     where a.numero = ? and b.baja_logica is false)
-    union
-    (select a.id_ticket, a.numero, a.estado_id_estado, a.requerimiento_id_requerimiento,
-            a.fecha_registro, a.comentarios, a.activo, NULL, null, null, null
-    from public.ticket a
-    where a.numero = ? and a.id_padre is null)
-    order by fecha_registro", [$numero, $numero]
-        );
-        
+        $totalTickets = \DB::connection('help')
+        ->where(\DB::table('public.ticket'))
+        ->where('estado_id_estado','=',1)
+            
+        ;
+        Mail::to('lemuzmujiquita@gmail.com ')->send(new MandarRecordatorio($totalTickets));
     }
 }
