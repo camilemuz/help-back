@@ -40,11 +40,11 @@ class EnviaCorreoProcesoMora extends Command
     {
         $tickets = Ticket::ticketsProceso();
         foreach ($tickets as $ticket) {
-            if ($ticket->dias_pasados >= 3){
+            if ($ticket->dias_pasados >= 1){
                 //se prepara el correo para el solicitante a su cuenta
                 $detalles = [
                     'titulo' => 'Alerta de Ticket en Espera',
-                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket Nª: $ticket->numero en espera hace mas de 3 dias, tiene que TERMINAR"
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket Nª: $ticket->numero en espera hace mas de 1 dia, tiene que TERMINAR"
                 ];
                 \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
             }

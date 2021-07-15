@@ -304,11 +304,11 @@ class TicketController extends Controller
         $tickets = Ticket::ticketsProceso();
         $correos = [];
         foreach ($tickets as $ticket) {
-            if ($ticket->dias_pasados >= 1){
+            if ($ticket->dias_pasados >= 2){
                 //se prepara el correo para el solicitante a su cuenta
                 $detalles = [
                     'titulo' => 'Alerta de Ticket en Espera',
-                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket Nª: $ticket->numero en espera hace mas de 3 dias, tiene que TERMINAR"
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket Nª: $ticket->numero en espera hace mas de 2 dias, tiene que TERMINAR"
                 ];
                 \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
                 array_push($correos, $ticket->email);
@@ -324,4 +324,30 @@ class TicketController extends Controller
             'correos' => $correos
         ]);
     }
+
+    public function ticketEnEspera(){
+        $tickets = Ticket::ticketsEnEspera();
+        $correos = [];
+        foreach ($tickets as $ticket) {
+            if ($ticket->dias_pasados >= 2){
+                //se prepara el correo para el solicitante a su cuenta
+                $detalles = [
+                    'titulo' => 'Alerta de Ticket en Espera',
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket Nª: $ticket->numero en espera hace mas de 2 dias, tiene que TOMARLO"
+                ];
+                \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
+                array_push($correos, $ticket->email);
+            }
+        }
+        if (count($correos) == 0){
+            return response()->json([
+                'mensaje' => 'No hay tickets de mora'
+            ]);
+        }
+        return response()->json([
+            'mensaje' => 'Se ha enviado correos a los tickets en espera con mora',
+            'correos' => $correos
+        ]);
+    }
+
 }
