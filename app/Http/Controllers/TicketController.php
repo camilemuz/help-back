@@ -304,7 +304,7 @@ class TicketController extends Controller
         $tickets = Ticket::ticketsProceso();
         $correos = [];
         foreach ($tickets as $ticket) {
-            if ($ticket->dias_pasados >= 3){
+            if ($ticket->dias_pasados >= 1){
                 //se prepara el correo para el solicitante a su cuenta
                 $detalles = [
                     'titulo' => 'Alerta de Ticket en Espera',

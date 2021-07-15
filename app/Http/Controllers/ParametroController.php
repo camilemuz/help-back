@@ -263,10 +263,20 @@ class ParametroController extends Controller
     }
 
 
+    // public function departamento(){
+    //     return response()->json([
+    //         'respuesta' => true,
+    //         'departamentos' => Departamento::all()
+    //     ]);
+    // }
+
     public function departamento(){
-        return response()->json([
-            'respuesta' => true,
-            'departamentos' => Departamento::all()
+        $departamento = Departamento::where('baja_logica', false)
+        ->orderBy('id_departamento', 'asc')
+        ->get();
+    return response()->json([
+        'respuesta' => true,
+        'departamentos' => $departamento
         ]);
     }
     public function indexdepartamento (Request $request){
