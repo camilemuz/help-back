@@ -4,8 +4,25 @@
     <bookmark url="file://$PROJECT_DIR$/app/Http/Controllers/SolicitudRequerimientoController.php" line="42" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d7049b4b-771a-4625-a9a3-b000aecf39b4" name="Default Changelist" comment="">
+    <list default="true" id="4113fd15-42eb-4b6e-8788-968a8596e17f" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.env.example" beforeDir="false" afterPath="$PROJECT_DIR$/.env.example" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Console/Commands/RecordatorioMails.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Commands/RecordatorioMails.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Console/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Console/Kernel.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ParametroController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ParametroController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SolicitudRequerimientoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SolicitudRequerimientoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/TicketController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/TicketController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/UsuarioController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/UsuarioController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Mail/InvoiceMail.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/InvoiceMail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Mail/MandarRecordatorio.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Mail/MandarRecordatorio.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Requerimiento.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Requerimiento.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/Ticket.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Ticket.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/mail.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/emails/invoice.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/emails/invoice.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/emails/recordatorio.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/emails/recordatorio.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -246,7 +263,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/config" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../help-front" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
@@ -272,7 +289,7 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d7049b4b-771a-4625-a9a3-b000aecf39b4" name="Default Changelist" comment="" />
+      <changelist id="4113fd15-42eb-4b6e-8788-968a8596e17f" name="Default Changelist" comment="" />
       <created>1621385269981</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -292,6 +309,7 @@
       <workItem from="1624460856514" duration="23891000" />
       <workItem from="1625070028350" duration="1145000" />
       <workItem from="1625076999454" duration="27747000" />
+      <workItem from="1626314509213" duration="59000" />
     </task>
     <servers />
   </component>
@@ -326,6 +344,18 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/database/migrations/2021_05_19_012822_create_table_ticket.php">
