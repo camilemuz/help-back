@@ -82,8 +82,8 @@ class TicketController extends Controller
         $asignado->save();
         //se prepara el correo para el solicitante a su cuenta
         $detalles = [
-            'titulo' => 'Alerta',
-            'body' => " $ticketActivo->comentarios Su solicitud fue tomada por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno"
+            'titulo' => 'Seguimiento de Ticket',
+            'body' => " $ticketActivo->comentarios Su solicitud fue tomada por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno. A las $asignado->fecha"
         ];
         $requerimiento = Requerimiento::findOrFail($ticket->requerimiento_id_requerimiento);
         $usuarioRequerimiento = User::findOrFail($requerimiento->usuario_id_usuario);

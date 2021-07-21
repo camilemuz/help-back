@@ -35,6 +35,23 @@ class UsuarioController extends Controller
         ]);
     }
 
+    // public function login(Request $request)
+    // {
+    //     $input = $request->only('email', 'password');
+    //     $jwt_token = null;
+    //     if (!$jwt_token = JWTAuth::attempt($input)){
+    //         return  response()->json([
+    //             'respuesta' => false,
+    //             'mensaje' => 'Correo o contraseña no válidos'
+    //         ]);
+    //     }
+    //     return response()->json([
+    //         'respuesta' => true,
+    //         'mensaje' => 'Inicio de sesion autorizado',
+    //         'token' => $jwt_token,
+    //     ]);
+    // }
+
     public function login(Request $request)
     {
         $input = $request->only('email', 'password');

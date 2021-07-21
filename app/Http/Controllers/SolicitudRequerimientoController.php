@@ -201,4 +201,8 @@ class SolicitudRequerimientoController extends Controller
         ]);
     }
 
+    
 }
+
+
+
