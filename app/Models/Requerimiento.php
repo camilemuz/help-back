@@ -58,4 +58,26 @@ class Requerimiento extends Model
                 where id_requerimiento = ?", [$idRequerimiento]
         );
     }
+
+    public function adicionaImagen(string $imageRequest)
+    {
+        $archivosRepository = new ArchivosRepository();
+        if (preg_match('/^data:image\/(\w+);base64,/', $imageRequest)) {
+            $data = substr($imageRequest, strpos($imageRequest, ',') + 1);
+            $extension = explode('/', mime_content_type($imageRequest))[1];
+            $imagen = base64_decode($data);
+        } else {
+            throw new \Exception('Error al cargar imagen');
+        }
+        $respuesta = $archivosRepository->registrarArchivo($imagen, [
+            'tipo' => 'movil',
+            'extension' => $extension
+        ]);
+        $respuesta = json_decode($respuesta);
+        $path = $respuesta->data;
+        $image = new Imagen();
+        $image->ruta = $path;
+        $this->imagenes()->save($image);
+        return $this;
+    }
 }

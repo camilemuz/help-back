@@ -307,8 +307,8 @@ class TicketController extends Controller
             if ($ticket->dias_pasados >= 2){
                 //se prepara el correo para el solicitante a su cuenta
                 $detalles = [
-                    'titulo' => 'Alerta de Ticket en Espera',
-                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket Nª: $ticket->numero en espera hace mas de 2 dias, tiene que TERMINAR"
+                    'titulo' => 'Cierre de Ticket',
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket N°: $ticket->numero en proceso hace mas de 2 dias, el ticket debe ser cerrado"
                 ];
                 \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
                 array_push($correos, $ticket->email);
@@ -320,7 +320,7 @@ class TicketController extends Controller
             ]);
         }
         return response()->json([
-            'mensaje' => 'Se ha enviado correos a los tickets en proceso con mora',
+            'mensaje' => 'Se ha enviado correos a los tickets En Proceso con mora',
             'correos' => $correos
         ]);
     }
@@ -333,7 +333,7 @@ class TicketController extends Controller
                 //se prepara el correo para el solicitante a su cuenta
                 $detalles = [
                     'titulo' => 'Alerta de Ticket en Espera',
-                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket Nª: $ticket->numero en espera hace mas de 2 dias, tiene que TOMARLO"
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket N°: $ticket->numero En Espera hace mas de 2 dias, tiene que TOMARLO"
                 ];
                 \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
                 array_push($correos, $ticket->email);
@@ -345,7 +345,7 @@ class TicketController extends Controller
             ]);
         }
         return response()->json([
-            'mensaje' => 'Se ha enviado correos a los tickets en espera con mora',
+            'mensaje' => 'Se ha enviado correos a los tickets En Espera con mora',
             'correos' => $correos
         ]);
     }
