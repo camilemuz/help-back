@@ -78,6 +78,10 @@ Route::group(['prefix' => 'agente'], function() {
     
     Route::get('enviar_correo_proceso', 'TicketController@ticketProceso');
     Route::get('enviar_correo_espera', 'TicketController@ticketEnEspera');
+    
+    Route::post('adicionarImagen', 'SolicitudRequerimientoController@adicionarImagen');
+
+
 });
 Route::group(['prefix' => 'admin'], function() {
     Route::put('store/{id}', 'UsuarioController@store');

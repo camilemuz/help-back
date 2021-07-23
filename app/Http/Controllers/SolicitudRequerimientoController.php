@@ -200,7 +200,14 @@ class SolicitudRequerimientoController extends Controller
             'mensaje' => 'Error al guardar los datos en la Base de Datos'
         ]);
     }
-
+    public function adicionarImagen(Requerimiento $requerimiento, Request $request)
+    {
+        $this->validate($request, [
+            'imagen' => 'required'
+        ]);
+        $conexion->adicionaImagen($request->imagen);
+        return response()->json(['data' => $requerimiento], 201);
+    }
     
 }
 
