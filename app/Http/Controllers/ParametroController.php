@@ -156,12 +156,12 @@ class ParametroController extends Controller
 
     public function eliminartiporeq (Request $request)
     {
-        if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
-            return  response()->json([
-                'respuesta' => false,
-                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
-            ]);
-        }
+        // if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+        //     return  response()->json([
+        //         'respuesta' => false,
+        //         'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+        //     ]);
+        // }
         $tipoRequerimiento = TipoRequerimiento::findOrFail($request->input('id_tipo_req'));
         $tipoRequerimiento->baja_logica = true;
         $tipoRequerimiento->save();

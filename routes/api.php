@@ -30,7 +30,7 @@ Route::group(['prefix' => 'parametros'], function() {
     Route::get('indextiporeq', 'ParametroController@indextiporeq');
     Route::post('storetiporeq', 'ParametroController@storetiporeq');
     Route::put('updatetiporeq/{id}', 'ParametroController@updatetiporeq');
-    Route::post('eliminarmun', 'ParametroController@eliminarmunicipio');
+    Route::post('eliminartiporeq', 'ParametroController@eliminartiporeq');
 
     Route::get('municipio', 'ParametroController@municipio');
     Route::get('indexmun', 'ParametroController@indexmunicipio');
