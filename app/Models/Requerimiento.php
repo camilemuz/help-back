@@ -58,6 +58,7 @@ class Requerimiento extends Model
                 where id_requerimiento = ?", [$idRequerimiento]
         );
     }
+    
 
     public function adicionaImagen(string $imageRequest)
     {
