@@ -261,6 +261,70 @@ class ParametroController extends Controller
             'mensaje' => 'No se ha encontrado sucursales'
         ]);
     }
+    public function indexsucursal (Request $request){
+        $sucursal = Sucursal::where('baja_logica', false)
+            ->orderBy('id_sucursal', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'sucursales' => $sucursal
+        ]);
+    }
+    public function storesucursal(Request $request)
+    {
+        $this->validate($request, [
+            'cod' => ['required'],
+            'sucursal' => ['required'],
+            'municipio_id_lugar' => ['required'],
+
+        ]);
+        $sucursal = new Sucursal();
+        $sucursal->cod = $request->cod;
+        $sucursal->sucursal = $request->sucursal;
+        $sucursal->municipio_id_lugar = $request->municipio_id_lugar;
+
+        $sucursal->save();
+
+        return response()->json([
+            'respuesta'=>true,
+            'mensaje'=>'Sucursal creada con éxito'
+        ]);
+    }
+    public function updatesucursal(Request $request, $id)
+    {
+        $this->validate($request, [
+            'cod' => [],
+            'sucursal' => [],
+            'municipio_id_lugar' => [],
+
+        ]);
+        $sucursal = Sucursal::findOrFail($id);
+        $sucursal->cod = $request->input('cod');
+        $sucursal->sucursal = $request->input('sucursal');
+        $sucursal->municipio_id_lugar = $request->input('municipio_id_lugar');
+        $sucursal->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Sucursal editada con éxito'
+        ]);
+    }
+
+    public function eliminarsucursal(Request $request)
+    {
+        /*if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }*/
+        $sucursal = Sucursal::findOrFail($request->input('id_sucursal'));
+        $sucursal->baja_logica = true;
+        $sucursal->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'sucursal eliminada con éxito'
+        ]);
+    }
 
 
     // public function departamento(){

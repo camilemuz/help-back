@@ -39,6 +39,10 @@ Route::group(['prefix' => 'parametros'], function() {
     Route::post('eliminarmun', 'ParametroController@eliminarmunicipio');
 
     Route::get('sucursal/{id}', 'ParametroController@sucursal');
+    Route::get('indexsucursal', 'ParametroController@indexsucursal');
+    Route::post('storesucursal', 'ParametroController@storesucursal');
+    Route::put('updatesucursal/{id}', 'ParametroController@updatesucursal');
+    Route::post('eliminarsucursal', 'ParametroController@eliminarsucursal');
 
     Route::get('departamento', 'ParametroController@departamento');
     Route::post('indexdpto', 'ParametroController@indexdepartamento');
