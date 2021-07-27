@@ -9,6 +9,7 @@ use App\Models\Municipio;
 use App\Models\Rol;
 use App\Models\Sucursal;
 use App\Models\TipoRequerimiento;
+use App\Models\Prioridad;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -412,21 +413,95 @@ class ParametroController extends Controller
             'divisiones' => Division::all()
         ]);
     }
+    public function indexdivision (Request $request){
+        $division = Division::where('baja_logica', false)
+            ->orderBy('id_division', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'divisiones' => $division
+        ]);
+    }
+    public function storedivision(Request $request)
+    {
+        $this->validate($request, [
+            'cod' => ['required'],
+            'division' => ['required'],
+
+        ]);
+        $division = new Division();
+        $division->cod = $request->cod;
+        $division->division = $request->division;
+
+        $division->save();
+
+        return response()->json([
+            'respuesta'=>true,
+            'division'=> $division
+        ]);
+    }
+    public function updatedivision(Request $request, $id)
+    {
+        $this->validate($request, [
+            'cod' => [],
+            'division' => [],
+
+        ]);
+        $division = Division::findOrFail($id);
+        $division->cod = $request->input('cod');
+        $division->division = $request->input('division');
+        $division->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Division editada con éxito'
+        ]);
+    }
+
+    public function eliminardivision(Request $request)
+    {
+        /*if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }*/
+        $division = Division::findOrFail($request->input('id_division'));
+        $division->baja_logica = true;
+        $division->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Division eliminada con éxito'
+        ]);
+    }
+
+
 
 
     public function cargo(){
+        $cargo = cargo::where('baja_logica', false)
+            ->orderBy('id_cargo', 'asc')
+            ->get();
         return response()->json([
             'respuesta' => true,
-            'cargos' => Cargo::all()
+            'cargos' => $cargo
         ]);
+
+
     }
+
+    // public function cargo(){
+    //     return response()->json([
+    //         'respuesta' => true,
+    //         'cargos' => Cargo::all()
+    //     ]);
+    // }
     public function indexcargo (Request $request){
         $cargo = Cargo::where('baja_logica', false)
             ->orderBy('id_cargo', 'asc')
             ->get();
         return response()->json([
             'respuesta' => true,
-            'categorias' => $cargo
+            'cargos' => $cargo
         ]);
     }
     public function storecargo(Request $request)
@@ -434,7 +509,7 @@ class ParametroController extends Controller
         $this->validate($request, [
             'cod' => ['required'],
             'cargo' => ['required'],
-            'prioridad_id_prioridad' => ['requered']
+            'prioridad_id_prioridad' => ['required']
 
         ]);
         $cargo = new Cargo();
@@ -459,7 +534,8 @@ class ParametroController extends Controller
         ]);
         $cargo = Cargo::findOrFail($id);
         $cargo->cod = $request->input('cod');
-        $cargo->categoria = $request->input('categoria');
+        $cargo->cargo = $request->input('cargo');
+        $cargo->prioridad_id_prioridad = $request->input('prioridad_id_prioridad');
         $cargo->save();
         return response()->json([
             'respuesta' => true,
@@ -485,6 +561,72 @@ class ParametroController extends Controller
     }
 
 
+    public function prioridad(){
+        return response()->json([
+            'respuesta' => true,
+            'prioridades' => Prioridad::all()
+        ]);
+    }
+    public function indexprioridad (Request $request){
+        $cargo = Cargo::where('baja_logica', false)
+            ->orderBy('id_prioridad', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'prioridads' => $prioridad
+        ]);
+    }
+    public function storeprioridad(Request $request)
+    {
+        $this->validate($request, [
+            'cod' => ['required'],
+            'prioirdad' => ['required'],
+            
+
+        ]);
+        $prioridad = new Prioridad();
+        $prioridad->cod = $request->cod;
+        $prioridad->prioridad = $request->prioridad;
+        $prioridad->save();
+
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Prioridad creada con éxito'
+        ]);
+    }
+    public function updateprioridad(Request $request, $id)
+    {
+        $this->validate($request, [
+            'cod' => [],
+            'prioridad' => [],
+            
+        ]);
+        $prioridad = Prioridad::findOrFail($id);
+        $prioridad->cod = $request->input('cod');
+        $prioridad->prioridad = $request->input('prioridad');
+        $prioridad->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Prioridad editada con éxito'
+        ]);
+    }
+
+    public function eliminarprioridad(Request $request)
+    {
+        /* if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
+             return  response()->json([
+                 'respuesta' => false,
+                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+             ]);
+         }*/
+        $prioridad = Prioridad::findOrFail($request->input('id_prioridad'));
+        $prioridad->baja_logica = true;
+        $prioridad->save();
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Prioridad eliminada con éxito'
+        ]);
+    }
 
     public function rol(){
         return response()->json([

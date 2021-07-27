@@ -51,12 +51,20 @@ Route::group(['prefix' => 'parametros'], function() {
     Route::post('eliminardpto', 'ParametroController@eliminardepartamento');
 
     Route::get('division', 'ParametroController@division');
+    Route::post('indexdivision', 'ParametroController@indexdivision');
+    Route::post('storedivision', 'ParametroController@storedivision');
+    Route::put('updatedivision/{id}', 'ParametroController@updatedivision');
+    Route::post('eliminardivision', 'ParametroController@eliminardivision');
 
     Route::get('cargo', 'ParametroController@cargo');
-    Route::post('indexcargo', 'ParametroController@indexcargo');
+    Route::get('indexcargo', 'ParametroController@indexcargo');
     Route::post('storecargo', 'ParametroController@storecargo');
     Route::put('updatecargo/{id}', 'ParametroController@updatecargo');
     Route::post('eliminarcargo', 'ParametroController@eliminarcargo');
+
+    Route::get('prioridad', 'ParametroController@prioridad');
+    Route::get('indexprioridad', 'ParametroController@indexprioridad');
+
 
     Route::get('rol', 'ParametroController@rol');
     Route::get('usuarios', 'UsuarioController@usuarios');
