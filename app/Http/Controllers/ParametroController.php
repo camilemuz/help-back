@@ -613,12 +613,7 @@ class ParametroController extends Controller
 
     public function eliminarprioridad(Request $request)
     {
-        /* if (($this->obtieneIdUsuario($request->input('usuario'), Rol::ADMINISTRADOR)) == null){
-             return  response()->json([
-                 'respuesta' => false,
-                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
-             ]);
-         }*/
+       
         $prioridad = Prioridad::findOrFail($request->input('id_prioridad'));
         $prioridad->baja_logica = true;
         $prioridad->save();
