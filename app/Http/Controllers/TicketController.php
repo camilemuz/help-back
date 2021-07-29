@@ -83,7 +83,8 @@ class TicketController extends Controller
         //se prepara el correo para el solicitante a su cuenta
         $detalles = [
             'titulo' => 'Seguimiento de Ticket',
-            'body' => " $ticketActivo->comentarios Su solicitud fue tomada por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno. A las $asignado->fecha"
+            'body' => " $ticketActivo->comentarios Su solicitud fue tomada por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno.", 
+            'descripcion' =>"El día $asignado->fecha"
         ];
         $requerimiento = Requerimiento::findOrFail($ticket->requerimiento_id_requerimiento);
         $usuarioRequerimiento = User::findOrFail($requerimiento->usuario_id_usuario);
@@ -131,8 +132,9 @@ class TicketController extends Controller
         $asignado->save();
         //se prepara el correo para el solicitante a su cuenta
         $detalles = [
-            'titulo' => 'Alerta',
-            'body' => "Su solicitud fue terminado por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno"
+            'titulo' => 'Alerta, ticket cerrado',
+            'body' => "Su solicitud fue terminado por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno",
+            'descripcion' => "Ticket cerrado a las  $asignado->fecha "
         ];
         $requerimiento = Requerimiento::findOrFail($ticket->requerimiento_id_requerimiento);
         $usuarioRequerimiento = User::findOrFail($requerimiento->usuario_id_usuario);
@@ -308,7 +310,8 @@ class TicketController extends Controller
                 //se prepara el correo para el solicitante a su cuenta
                 $detalles = [
                     'titulo' => 'Cierre de Ticket',
-                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket N°: $ticket->numero en proceso hace mas de 2 dias, el ticket debe ser cerrado"
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno:  ",
+                    'descripcion' => "Tiene el ticket N°: $ticket->numero en proceso hace mas de 2 dias, el ticket debe ser cerrado"
                 ];
                 \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
                 array_push($correos, $ticket->email);
@@ -333,7 +336,8 @@ class TicketController extends Controller
                 //se prepara el correo para el solicitante a su cuenta
                 $detalles = [
                     'titulo' => 'Alerta de Ticket en Espera',
-                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno: \n Tiene el ticket N°: $ticket->numero En Espera hace mas de 2 dias, tiene que TOMARLO"
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno:",
+                    'descripcion'=>"Tiene el ticket N°: $ticket->numero En Espera hace mas de 2 dias, tiene que TOMARLO"
                 ];
                 \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
                 array_push($correos, $ticket->email);

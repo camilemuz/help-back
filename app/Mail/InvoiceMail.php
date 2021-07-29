@@ -30,7 +30,7 @@ class InvoiceMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Envio de confirmacion')->view('emails.invoice');
+        return $this->subject('MDA EPSAS, Mesa de Ayuda')->view('emails.invoice');
 
     }
 }
