@@ -33,7 +33,7 @@ class SolicitudRequerimientoController extends Controller
         $requerimiento = new Requerimiento();
         $requerimiento->descripcion = $request->input('descripcion');
         $requerimiento->interno = $request->input('interno');
-        // $requerimiento->media = $request->input('media');
+        $requerimiento->archivo = ($request->input('archivo'));
         $requerimiento->usuario_id_usuario = $this->obtieneIdUsuario($request->input('email'));
         $requerimiento->departamento_id_departamento = $request->input('departamento_id_departamento');
         $requerimiento->tipo_requerimiento_id_tipo_req = $request->input('tipo_requerimiento_id_tipo_req');
@@ -95,7 +95,7 @@ class SolicitudRequerimientoController extends Controller
         $requerimiento = Requerimiento::findOrFail($request->input('id_requerimiento'));
         $requerimiento->descripcion = $request->input('descripcion');
         $requerimiento->interno = $request->input('interno');
-        // $requerimiento->media = $request->input('media');
+        $requerimiento->archivo = ($request->input('archivo'));
         $requerimiento->usuario_id_usuario = $this->obtieneIdUsuario($request->input('email'));
         $requerimiento->departamento_id_departamento = $request->input('departamento_id_departamento');
         $requerimiento->tipo_requerimiento_id_tipo_req = $request->input('tipo_requerimiento_id_tipo_req');

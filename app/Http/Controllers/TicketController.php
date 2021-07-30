@@ -14,8 +14,13 @@ use Namshi\JOSE\SimpleJWS;
 
 class TicketController extends Controller
 {
-    public function listadoReq(){
-        $tickets = Ticket::listadoTikets();
+    public function listadoReq(Request $request){
+         //se obtiene la division del usuario
+         $usuario = User::where('email', $request->input('email'))
+         ->where('baja_logica', false)
+         ->first();
+         
+        $tickets = Ticket::listadoTikets($usuario->division_id_division);
         return response()->json([
             'respuesta' => true,
             'tickets' => $tickets
