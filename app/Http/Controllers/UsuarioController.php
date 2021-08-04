@@ -17,6 +17,15 @@ class UsuarioController extends Controller
 
     public function registro(Request $request)
     {
+        $this->validate($request, [
+            'nombre' => ['required'],
+            'ap_paterno' => ['required'],
+            'ap_materno' => ['nullable'],
+            'email' => ['required'],
+            'password' => ['required'],
+            
+            
+        ]);
         $usuario = new User();
         $usuario->nombre = $request->input('nombre');
         $usuario->ap_paterno = $request->input('ap_paterno');

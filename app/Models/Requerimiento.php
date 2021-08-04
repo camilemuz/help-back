@@ -24,7 +24,7 @@ class Requerimiento extends Model
                             a.descripcion,
                             (select nombre || ' ' || ap_paterno || ' ' || ap_materno
                             from public.usuario where id_usuario = a.usuario_id_usuario limit 1) usuario,
-                            interno,
+                            interno, archivo,
                             (select sub_cat
                             from public.tipo_requerimiento where id_tipo_req = a.tipo_requerimiento_id_tipo_req limit 1) requerimiento,
                             (select departamento
@@ -43,9 +43,9 @@ class Requerimiento extends Model
                   a.id_requerimiento,
                   a.descripcion,
                   a.usuario_id_usuario,
-                  a.interno,
-                  a.media,
+                  a.interno,                  
                   a.tipo_requerimiento_id_tipo_req,
+                  a.archivo
                   (select categoria_id_categoria
                   from public.tipo_requerimiento
                   where id_tipo_req = a.tipo_requerimiento_id_tipo_req limit 1) categoria_id,
@@ -60,25 +60,25 @@ class Requerimiento extends Model
     }
     
 
-    public function adicionaImagen(string $imageRequest)
-    {
-        $archivosRepository = new ArchivosRepository();
-        if (preg_match('/^data:image\/(\w+);base64,/', $imageRequest)) {
-            $data = substr($imageRequest, strpos($imageRequest, ',') + 1);
-            $extension = explode('/', mime_content_type($imageRequest))[1];
-            $imagen = base64_decode($data);
-        } else {
-            throw new \Exception('Error al cargar imagen');
-        }
-        $respuesta = $archivosRepository->registrarArchivo($imagen, [
-            'tipo' => 'movil',
-            'extension' => $extension
-        ]);
-        $respuesta = json_decode($respuesta);
-        $path = $respuesta->data;
-        $image = new Imagen();
-        $image->ruta = $path;
-        $this->imagenes()->save($image);
-        return $this;
-    }
+    // public function adicionaImagen(string $imageRequest)
+    // {
+    //     $archivosRepository = new ArchivosRepository();
+    //     if (preg_match('/^data:image\/(\w+);base64,/', $imageRequest)) {
+    //         $data = substr($imageRequest, strpos($imageRequest, ',') + 1);
+    //         $extension = explode('/', mime_content_type($imageRequest))[1];
+    //         $imagen = base64_decode($data);
+    //     } else {
+    //         throw new \Exception('Error al cargar imagen');
+    //     }
+    //     $respuesta = $archivosRepository->registrarArchivo($imagen, [
+    //         'tipo' => 'movil',
+    //         'extension' => $extension
+    //     ]);
+    //     $respuesta = json_decode($respuesta);
+    //     $path = $respuesta->data;
+    //     $image = new Imagen();
+    //     $image->ruta = $path;
+    //     $this->imagenes()->save($image);
+    //     return $this;
+    // }
 }

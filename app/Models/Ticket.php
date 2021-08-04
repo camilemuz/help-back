@@ -39,7 +39,8 @@ class Ticket extends Model
                             (select sucursal from public.sucursal where b.sucursal_id_sucursal = id_sucursal limit 1) sucursal,
                              e.nombre || ' ' || e.ap_paterno || ' ' || e.ap_materno as usuario_requerimiento,
                             f.prioridad_id_prioridad id_prioridad,
-                            (select prioridad from public.prioridad where id_prioridad = f.prioridad_id_prioridad) prioridad
+                            (select prioridad from public.prioridad where id_prioridad = f.prioridad_id_prioridad) prioridad,
+                        b.archivo,b.interno
                     from public.ticket a
                     inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
                     inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
@@ -155,24 +156,24 @@ c.nombre, c.ap_paterno, c.ap_materno, c.id_usuario
                     and a.activo is true;", [ Estado::EN_ESPERA ]
         );
     }
-    public static function filtroDivision (){
-        return DB::connection('help')->select(
-            "SELECT 
-                a.id_ticket,
-                a.numero,
-                a.requerimiento_id_requerimiento,
-                d.email,
-                d.nombre,
-                d.ap_paterno,
-                d.ap_materno,
-                f.division
-                FROM public.ticket a
-                inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
-                inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
-                inner join public.usuario d on c.division_id_division = d.division_id_division
-                inner join public.division f on d.division_id_division= f.id_division
-                inner join public.rol e on  d.rol_id_rol= e.id_rol;"
-        );
-    }
+    // public static function filtroDivision (){
+    //     return DB::connection('help')->select(
+    //         "SELECT 
+    //             a.id_ticket,
+    //             a.numero,
+    //             a.requerimiento_id_requerimiento,
+    //             d.email,
+    //             d.nombre,
+    //             d.ap_paterno,
+    //             d.ap_materno,
+    //             f.division
+    //             FROM public.ticket a
+    //             inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
+    //             inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
+    //             inner join public.usuario d on c.division_id_division = d.division_id_division
+    //             inner join public.division f on d.division_id_division= f.id_division
+    //             inner join public.rol e on  d.rol_id_rol= e.id_rol;"
+    //     );
+    // }
 
 }
