@@ -38,11 +38,11 @@ class UsuarioController extends Controller
         $usuario->cargo_id_cargo = $request->input('cargo_id_cargo');
         $usuario->division_id_division = Division::OTROS;
        
-
+        $usuario->save();
         
         $usuarios=User::all();
         foreach($usuarios as $usuario){
-            $pass = 'Mda_.'. $usuario->ci . $ap_paterno;
+            $pass = 'Mda'. $usuario->ci . $ap_paterno;
             $usuario->password =bcrypt($pass);
 
             $usuario->save();
