@@ -17,16 +17,16 @@ class UsuarioController extends Controller
 
     public function registro(Request $request)
     {
-        $this->validate($request, [
-            'nombre' => ['required'],
-            'ap_paterno' => ['required'],
-            'ap_materno' => ['nullable'],
-            'ci' => ['required'],
-            'email' => ['required'],
-            'password' => ['required'],
+        // $this->validate($request, [
+        //     'nombre' => ['required'],
+        //     'ap_paterno' => ['required'],
+        //     'ap_materno' => ['nullable'],
+        //     'ci' => [],
+        //     'email' => ['required'],
+        //     'password' => ['required'],
             
             
-        ]);
+        // ]);
         $usuario = new User();
         $usuario->nombre = $request->input('nombre');
         $usuario->ap_paterno = $request->input('ap_paterno');
@@ -166,7 +166,7 @@ class UsuarioController extends Controller
         $user->ap_paterno = $request->input('ap_paterno');
         $user->ap_materno = $request->input('ap_materno');
         $user->ap_materno = $request->input('ap_materno');
-        $usuario->ci = $request->input('ci');
+        $user->ci = $request->input('ci');
         $user->rol_id_rol = $request->input('rol_id_rol');
         $user->cargo_id_cargo = $request->input('cargo_id_cargo');
         $user->division_id_division = $request->input('division_id_division');
