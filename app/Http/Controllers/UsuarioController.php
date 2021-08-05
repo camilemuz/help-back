@@ -21,6 +21,7 @@ class UsuarioController extends Controller
             'nombre' => ['required'],
             'ap_paterno' => ['required'],
             'ap_materno' => ['nullable'],
+            'ci' => ['required'],
             'email' => ['required'],
             'password' => ['required'],
             
@@ -30,12 +31,22 @@ class UsuarioController extends Controller
         $usuario->nombre = $request->input('nombre');
         $usuario->ap_paterno = $request->input('ap_paterno');
         $usuario->ap_materno = $request->input('ap_materno');
+        $usuario->ci = $request->input('ci');
         $usuario->email = $request->input('email');
-        $usuario->password = bcrypt($request->input('password'));
+        // $usuario->password = bcrypt($request->input('password'));
         $usuario->rol_id_rol = Rol::FUNCIONARIO;
         $usuario->cargo_id_cargo = $request->input('cargo_id_cargo');
         $usuario->division_id_division = Division::OTROS;
-        $usuario->save();
+       
+
+        
+        $usuarios=User::all();
+        foreach($usuarios as $usuario){
+            $pass = 'Mda_.'. $usuario->ci . $ap_paterno;
+            $usuario->password =bcrypt($pass);
+
+            $usuario->save();
+        }
 
         if ($this->loginAfterSignUp) return $this->login($request);
         return  response()->json([
@@ -155,6 +166,7 @@ class UsuarioController extends Controller
         $user->ap_paterno = $request->input('ap_paterno');
         $user->ap_materno = $request->input('ap_materno');
         $user->ap_materno = $request->input('ap_materno');
+        $usuario->ci = $request->input('ci');
         $user->rol_id_rol = $request->input('rol_id_rol');
         $user->cargo_id_cargo = $request->input('cargo_id_cargo');
         $user->division_id_division = $request->input('division_id_division');
@@ -209,6 +221,7 @@ class UsuarioController extends Controller
         $usuario->nombre = $request->input('nombre');
         $usuario->ap_paterno = $request->input('ap_paterno');
         $usuario->ap_materno = $request->input('ap_materno');
+        $usuario->ci = $request->input('ci');
         $usuario->email = $request->input('email');
         $usuario->password = bcrypt($request->input('password'));
         $usuario->rol_id_rol = $request->input('rol_id_rol');
