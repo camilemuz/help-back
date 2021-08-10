@@ -40,22 +40,26 @@ class Requerimiento extends Model
     public static function requerimientoDetalle($idRequerimiento){
         return DB::connection('help')->select(
             "SELECT
-                  a.id_requerimiento,
-                  a.descripcion,
-                  a.usuario_id_usuario,
-                  a.interno,                  
-                  a.tipo_requerimiento_id_tipo_req,
-                  a.archivo
-                  (select categoria_id_categoria
-                  from public.tipo_requerimiento
-                  where id_tipo_req = a.tipo_requerimiento_id_tipo_req limit 1) categoria_id,
-                  a.departamento_id_departamento,
-                  a.sucursal_id_sucursal,
-                  (select municipio_id_lugar
-                  from public.sucursal
-                  where id_sucursal = a.sucursal_id_sucursal limit 1) municipio_id
-                FROM public.requerimiento a
-                where id_requerimiento = ?", [$idRequerimiento]
+            pri.prioridad,
+             a.id_requerimiento,
+             a.descripcion,
+             a.usuario_id_usuario,
+             a.interno,                  
+             a.tipo_requerimiento_id_tipo_req,              
+             (select categoria_id_categoria
+             from public.tipo_requerimiento
+             where id_tipo_req = a.tipo_requerimiento_id_tipo_req limit 1) categoria_id,
+             a.departamento_id_departamento,
+             a.sucursal_id_sucursal,
+             (select municipio_id_lugar
+             from public.sucursal
+             where id_sucursal = a.sucursal_id_sucursal limit 1) municipio_id
+           FROM public.requerimiento a
+           inner join usuario usr on a.usuario_id_usuario=usr.id_usuario 
+                 inner join cargo ca on usr.cargo_id_cargo = ca.id_cargo
+                 inner join prioridad pri on ca.prioridad_id_prioridad=pri.id_prioridad
+
+           where id_requerimiento = ?", [$idRequerimiento]
         );
     }
     

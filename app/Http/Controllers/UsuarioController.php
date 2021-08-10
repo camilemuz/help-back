@@ -33,20 +33,15 @@ class UsuarioController extends Controller
         $usuario->ap_materno = $request->input('ap_materno');
         $usuario->ci = $request->input('ci');
         $usuario->email = $request->input('email');
-        // $usuario->password = bcrypt($request->input('password'));
+        $usuario->password = bcrypt($request->input('password'));
         $usuario->rol_id_rol = Rol::FUNCIONARIO;
         $usuario->cargo_id_cargo = $request->input('cargo_id_cargo');
         $usuario->division_id_division = Division::OTROS;
-       
-        $usuario->save();
-        
-        $usuarios=User::all();
-        foreach($usuarios as $usuario){
-            $pass = 'Mda'. $usuario->ci . $ap_paterno;
-            $usuario->password =bcrypt($pass);
+      
 
-            $usuario->save();
-        }
+        $usuario->save();
+         
+        
 
         if ($this->loginAfterSignUp) return $this->login($request);
         return  response()->json([
@@ -55,6 +50,15 @@ class UsuarioController extends Controller
         ]);
     }
 
+    // public function generarContrasenha (Request $request){
+    //     $usuarios=User::all();
+    //     foreach($usuarios as $usuario){
+    //         $pass = 'Mda'. $usuario->ci;
+    //         $usuario->password =bcrypt($pass)->input('password');
+
+    //         $usuario->save();
+    //     }
+    // }
     // public function login(Request $request)
     // {
     //     $input = $request->only('email', 'password');
@@ -74,20 +78,42 @@ class UsuarioController extends Controller
 
     public function login(Request $request)
     {
+       
+    //   $user= User::where('email', '=' , $request->input('email'))->first();
+    // //   if($user->password == NULL){
+    //     // $pass = 'Mda'. $usuarios->ci;
+    //     $user->password = bcrypt($request->input('Mda123456'));
+    //     $user->save();
+    // // }
+    // return response()->json([
+    //     'respuestas'=>true,
+    //     'mensaje'=>'contraseña correcta',
+    //     'usuarios'=> $user,
+    // ]) ;  
+           
+       
+           
+
         $input = $request->only('email', 'password');
         $jwt_token = null;
+
         if (!$jwt_token = JWTAuth::attempt($input)){
             return  response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Correo o contraseña no válidos'
             ]);
         }
+       
+
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Inicio de sesion autorizado',
             'token' => $jwt_token,
         ]);
+
+       
     }
+
 
     public function logout(Request $request){
         $this->validate($request, [

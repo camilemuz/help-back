@@ -21,7 +21,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'nombre', 'ap_paterno', 'ap_materno', 'email', 'password', 'rol_id_rol', 'cargo_id_cargo', 'division_id_division'
+        'nombre', 'ap_paterno', 'ap_materno', 'email', 'password', 'rol_id_rol', 'cargo_id_cargo', 'division_id_division', 'ci'
     ];
 
     /**
@@ -30,7 +30,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password', 'baja_logica', 'fecha_registro', 'usuario_registro', 'ip_registro'
+         'baja_logica', 'fecha_registro', 'usuario_registro', 'ip_registro'
     ];
 
     /**
