@@ -96,17 +96,50 @@ class Ticket extends Model
     }
     public static function historial($numero){
         return DB::connection('help')->select(
-            "(select a.id_ticket, a.numero, a.estado_id_estado, a.requerimiento_id_requerimiento,
-                            a.fecha_registro, a.comentarios, a.activo,
-c.nombre, c.ap_paterno, c.ap_materno, c.id_usuario
+            "(select 
+            a.id_ticket,
+            a.numero, 
+            a.estado_id_estado,
+            a.requerimiento_id_requerimiento,
+            a.fecha_registro, 
+            a.comentarios, 
+            a.activo,
+            c.nombre, 
+            c.ap_paterno, 
+            c.ap_materno, 
+            c.id_usuario,
+ 			pri.prioridad,
+            pri.id_prioridad
+            
+                from public.ticket a
+ 				inner join public.requerimiento rq on a.requerimiento_id_requerimiento =rq.id_requerimiento
+                inner join public.asignado b on a.id_ticket = b.ticket_id_ticket
+                inner join public.usuario c on b.usuario_id_usuario = c.id_usuario
+ 
+				inner join cargo ca on c.cargo_id_cargo = ca.id_cargo
+				inner join prioridad pri on ca.prioridad_id_prioridad=pri.id_prioridad
+ 
+                where a.numero = ? and b.baja_logica is false)
+                 union
+                (select 
+                a.id_ticket, 
+                a.numero, 
+                a.estado_id_estado, 
+                a.requerimiento_id_requerimiento,
+                a.fecha_registro, 
+                a.comentarios, 
+                a.activo,
+                NULL, 
+                null, 
+                null, 
+                null,
+				pri.prioridad,
+                pri.id_prioridad
                     from public.ticket a
-                    inner join public.asignado b on a.id_ticket = b.ticket_id_ticket
-                    inner join public.usuario c on b.usuario_id_usuario = c.id_usuario
-                     where a.numero = ? and b.baja_logica is false)
-                    union
-                    (select a.id_ticket, a.numero, a.estado_id_estado, a.requerimiento_id_requerimiento,
-                            a.fecha_registro, a.comentarios, a.activo, NULL, null, null, null
-                    from public.ticket a
+                    inner join public.requerimiento rq on a.requerimiento_id_requerimiento =rq.id_requerimiento
+                    inner join public.usuario c on rq.usuario_id_usuario = c.id_usuario
+                    inner join cargo ca on c.cargo_id_cargo = ca.id_cargo
+				    inner join prioridad pri on ca.prioridad_id_prioridad=pri.id_prioridad
                     where a.numero = ? and a.id_padre is null)
                     order by fecha_registro", [$numero, $numero]
         );

@@ -41,6 +41,7 @@ class Requerimiento extends Model
         return DB::connection('help')->select(
             "SELECT
             pri.prioridad,
+            pri.id_prioridad,
              a.id_requerimiento,
              a.descripcion,
              a.usuario_id_usuario,
