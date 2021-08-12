@@ -17,6 +17,7 @@ class CreateTableRequerimiento extends Migration
             $table->id();
             $table->string('descripcion');
             $table->string('interno');
+            $table->string('media');
             $table->bigInteger('usuario_id')->unsigned();
             $table->foreign('usuario_id')->references('id')->on('usuario');
             $table->bigInteger('departamento_id')->unsigned();
@@ -24,7 +25,9 @@ class CreateTableRequerimiento extends Migration
             $table->bigInteger('tipo_requerimiento_id')->unsigned();
             $table->foreign('tipo_requerimiento_id')->references('id')->on('tipo_requerimiento');
             $table->bigInteger('sucursal_id')->unsigned();
-            $table->foreign('sucursal_id')->references('id')->on('sucursal');
+            $table->foreign('sucursal_id')->references('id')->on('imagen');
+            $table->bigInteger('imagen_id')->unsigned();
+            $table->foreign('imagen_id')->references('id')->on('imagen');
             $table->timestamps();
         });
     }

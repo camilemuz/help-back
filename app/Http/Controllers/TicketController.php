@@ -14,13 +14,27 @@ use Namshi\JOSE\SimpleJWS;
 
 class TicketController extends Controller
 {
-    public function listadoReq(){
+    public function listadoReq(Request $request){
+         //se obtiene la division del usuario
+         $usuario = User::where('email', $request->input('email'))
+         ->where('baja_logica', false)
+         ->first();
+         
+        $tickets = Ticket::listadoTikets($usuario->division_id_division);
+        return response()->json([
+            'respuesta' => true,
+            'tickets' => $tickets
+        ]);
+    }
+
+    public function listadoReqAdmin(){
         $tickets = Ticket::listadoTikets();
         return response()->json([
             'respuesta' => true,
             'tickets' => $tickets
         ]);
     }
+
 
     public function editar(Request $request){
         $ticket = Ticket::findOrFail($request->id);
@@ -52,8 +66,9 @@ class TicketController extends Controller
 
     public function tomarTicket(Request $request){
         //validando que solamente un AGENTE puede tomar un ticket
-        if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::AGENTE)) == null){
-            return  response()->json([
+
+        if (($usuario = $this->obtieneIdUsuario($request->input('email'), Rol::AGENTE)) == null) {
+            return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Usuario no autorizado para la asignacion de Ticket'
             ]);
@@ -72,12 +87,22 @@ class TicketController extends Controller
         $ticketActivo->save();
         //Completamos en la tabla Asignado
         $asignado = new Asignado();
-        $asignado->usuario_id_usuario = $idUsuario;
+        /*$asignado->usuario_id_usuario = $idUsuario;*/
+        $asignado->usuario_id_usuario = $usuario->id_usuario;
         $asignado->ticket_id_ticket = $ticketActivo->id_ticket;
         $asignado->fecha = date('d/m/Y');
         //TODO
         $asignado->asignado = '';
         $asignado->save();
+        //se prepara el correo para el solicitante a su cuenta
+        $detalles = [
+            'titulo' => 'Seguimiento de Ticket',
+            'body' => " $ticketActivo->comentarios Su solicitud fue tomada por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno.", 
+            'descripcion' =>"El día $asignado->fecha"
+        ];
+        $requerimiento = Requerimiento::findOrFail($ticket->requerimiento_id_requerimiento);
+        $usuarioRequerimiento = User::findOrFail($requerimiento->usuario_id_usuario);
+        \Mail::to($usuarioRequerimiento->email)->send(new \App\Mail\InvoiceMail($detalles));
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Ticket tomado con exito'
@@ -86,8 +111,14 @@ class TicketController extends Controller
 
     public function terminarTicket(Request $request){
         //validando que solamente un AGENTE puede tomar un ticket
-        if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::AGENTE)) == null){
+       /* if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::AGENTE)) == null){
             return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para la asignacion de Ticket'
+            ]);
+        }*/
+        if (($usuario = $this->obtieneIdUsuario($request->input('email'), Rol::AGENTE)) == null) {
+            return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Usuario no autorizado para la asignacion de Ticket'
             ]);
@@ -106,12 +137,22 @@ class TicketController extends Controller
         $ticketActivo->save();
         //Completamos en la tabla Asignado
         $asignado = new Asignado();
-        $asignado->usuario_id_usuario = $idUsuario;
+       /* $asignado->usuario_id_usuario = $idUsuario;*/
+        $asignado->usuario_id_usuario = $usuario->id_usuario;
         $asignado->ticket_id_ticket = $ticketActivo->id_ticket;
         $asignado->fecha = date('d/m/Y');
         //TODO
         $asignado->asignado = '';
         $asignado->save();
+        //se prepara el correo para el solicitante a su cuenta
+        $detalles = [
+            'titulo' => 'Alerta, ticket cerrado',
+            'body' => "Su solicitud fue terminado por $usuario->nombre $usuario->ap_paterno $usuario->ap_materno",
+            'descripcion' => "Ticket cerrado a las  $asignado->fecha "
+        ];
+        $requerimiento = Requerimiento::findOrFail($ticket->requerimiento_id_requerimiento);
+        $usuarioRequerimiento = User::findOrFail($requerimiento->usuario_id_usuario);
+        \Mail::to($usuarioRequerimiento->email)->send(new \App\Mail\InvoiceMail($detalles));
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Ticket terminado con exito'
@@ -124,7 +165,8 @@ class TicketController extends Controller
             ->where('rol_id_rol', $idRol)
             ->first();
         if ($usuario == null) return null;
-        else return $usuario->id_usuario;
+        /*else return $usuario->id_usuario;*/
+        else return $usuario;
     }
 
     private function validaToken($token){
@@ -145,13 +187,20 @@ class TicketController extends Controller
             ]);
         }
         //validamos el usurio tipo FUncionario
-        if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::FUNCIONARIO)) == null){
+        /*if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::FUNCIONARIO)) == null){
             return  response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
             ]);
+        }*/
+        if (($usuario = $this->obtieneIdUsuario($request->input('email'), Rol::FUNCIONARIO)) == null) {
+            return response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
         }
-        $tickets = Ticket::listadoTicketFuncionario($idUsuario);
+       /* $tickets = Ticket::listadoTicketFuncionario($idUsuario);*/
+        $tickets = Ticket::listadoTicketFuncionario($usuario->id_usuario);
         return response()->json([
             'respuesta' => true,
             'tickets' => $tickets
@@ -167,8 +216,14 @@ class TicketController extends Controller
             ]);
         }
         //validamos el usurio tipo FUncionario
-        if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::FUNCIONARIO)) == null){
+       /* if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::FUNCIONARIO)) == null){
             return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para ver las solicitudes'
+            ]);
+        }*/
+        if (($idUsuario = $this->obtieneIdUsuario($request->input('email'), Rol::FUNCIONARIO)) == null) {
+            return response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Usuario no autorizado para ver las solicitudes'
             ]);
@@ -206,4 +261,111 @@ class TicketController extends Controller
             'requerimiento' => $requerimientos[0]
         ]);
     }
+    public function ticket($id_ticket)
+    {
+        $requerimiento = Requerimiento::findOrFail($id_ticket);
+        $query = Requerimiento::requerimientoDetalle($requerimiento->id_requerimiento);
+        foreach ($query as $item) {
+            $requerimientoDetalle = $item;
+        }
+        return response()->json([
+            'respuesta' => true,
+            'requerimiento' => $requerimientoDetalle
+        ]);
+    }
+
+    public function cambiarEstado(Request $request)
+    {
+        $tickets = Ticket::where('numero', $request->input('numero'))
+            ->get();
+        foreach ($tickets as $ticket) {
+            if ($ticket->id_padre == null) {
+                $ticket->activo = true;
+            } else {
+                $ticket->activo = false;
+                $ticket->baja_logica = true;
+                $asignados = Asignado::where('ticket_id_ticket', $ticket->id_ticket)
+                    ->where('baja_logica', false)
+                    ->get();
+                foreach ($asignados as $asignado) {
+                    $asignado->baja_logica = true;
+                    $asignado->save();
+                }
+            }
+            $ticket->save();
+        }
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Se cambio el estado del Ticket'
+        ]);
+    }
+
+    public function cambioAgente(Request $request)
+    {
+        $asignados = Asignado::where('ticket_id_ticket', $request->input('id_ticket'))
+            ->where('baja_logica', false)
+            ->get();
+        foreach ($asignados as $asignado) {
+            $asignado->usuario_id_usuario = $request->input('id_usuario');
+            $asignado->save();
+        }
+        return response()->json([
+            'respuesta' => true,
+            'mensaje' => 'Se cambio el Agente del Ticket'
+        ]);
+    }
+
+    
+    public function ticketProceso(){
+        $tickets = Ticket::ticketsProceso();
+        $correos = [];
+        foreach ($tickets as $ticket) {
+            if ($ticket->dias_pasados >= 2){
+                //se prepara el correo para el solicitante a su cuenta
+                $detalles = [
+                    'titulo' => 'Cierre de Ticket',
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno:  ",
+                    'descripcion' => "Tiene el ticket N°: $ticket->numero en proceso hace mas de 2 dias, el ticket debe ser cerrado"
+                ];
+                \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
+                array_push($correos, $ticket->email);
+            }
+        }
+        if (count($correos) == 0){
+            return response()->json([
+                'mensaje' => 'No hay tickets de mora'
+            ]);
+        }
+        return response()->json([
+            'mensaje' => 'Se ha enviado correos a los tickets En Proceso con mora',
+            'correos' => $correos
+        ]);
+    }
+
+    public function ticketEnEspera(){
+        $tickets = Ticket::ticketsEnEspera();
+        $correos = [];
+        foreach ($tickets as $ticket) {
+            if ($ticket->dias_pasados >= 2){
+                //se prepara el correo para el solicitante a su cuenta
+                $detalles = [
+                    'titulo' => 'Alerta de Ticket en Espera',
+                    'body' => "Sr. $ticket->nombre $ticket->ap_paterno:",
+                    'descripcion'=>"Tiene el ticket N°: $ticket->numero En Espera hace mas de 2 dias, tiene que TOMARLO"
+                ];
+                \Mail::to($ticket->email)->send(new \App\Mail\InvoiceMail($detalles));
+                array_push($correos, $ticket->email);
+            }
+        }
+        if (count($correos) == 0){
+            return response()->json([
+                'mensaje' => 'No hay tickets de mora'
+            ]);
+        }
+        return response()->json([
+            'mensaje' => 'Se ha enviado correos a los tickets En Espera con mora',
+            'correos' => $correos
+        ]);
+    }
+
 }

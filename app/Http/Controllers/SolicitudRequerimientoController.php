@@ -33,6 +33,7 @@ class SolicitudRequerimientoController extends Controller
         $requerimiento = new Requerimiento();
         $requerimiento->descripcion = $request->input('descripcion');
         $requerimiento->interno = $request->input('interno');
+        $requerimiento->archivo = ($request->input('archivo'));
         $requerimiento->usuario_id_usuario = $this->obtieneIdUsuario($request->input('email'));
         $requerimiento->departamento_id_departamento = $request->input('departamento_id_departamento');
         $requerimiento->tipo_requerimiento_id_tipo_req = $request->input('tipo_requerimiento_id_tipo_req');
@@ -49,6 +50,12 @@ class SolicitudRequerimientoController extends Controller
             //TODO
             $ticket->comentarios = '';
             $respuesta = $ticket->save();
+            $detalles = [
+                'titulo' => 'Confirmación',
+                'body' => "Su solicitud fue creada con éxito, con la descripción: $requerimiento->descripcion.Se le mandará un correo cuando un agente haya tomado su Requerimiento.",
+                'descripcion' =>"El número de su ticket es: $ticket->numero"
+            ];
+            \Mail::to($request->input('email'))->send(new \App\Mail\InvoiceMail($detalles));
             if ($respuesta){
                 return response()->json([
                     'respuesta' => true,
@@ -65,6 +72,41 @@ class SolicitudRequerimientoController extends Controller
             'respuesta' => false,
             'mensaje' => 'Error al guardar los datos en la Base de Datos'
         ]);
+    }
+
+
+    public function editarRequerimiento(Request $request){
+        //validamos el token enviado
+        if ($this->validaToken($request->input('token'))){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Tiempo de sesión ha terminado'
+            ]);
+        }
+
+        if ($this->obtieneIdUsuario($request->input('email')) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para el registro'
+            ]);
+        }
+
+        //se crea el requerimiento en BD
+        $requerimiento = Requerimiento::findOrFail($request->input('id_requerimiento'));
+        $requerimiento->descripcion = $request->input('descripcion');
+        $requerimiento->interno = $request->input('interno');
+        $requerimiento->archivo = ($request->input('archivo'));
+        $requerimiento->usuario_id_usuario = $this->obtieneIdUsuario($request->input('email'));
+        $requerimiento->departamento_id_departamento = $request->input('departamento_id_departamento');
+        $requerimiento->tipo_requerimiento_id_tipo_req = $request->input('tipo_requerimiento_id_tipo_req');
+        $requerimiento->sucursal_id_sucursal = $request->input('sucursal_id_sucursal');
+        $respuesta = $requerimiento->save();
+        if ($respuesta){
+            return  response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Requerimiento modificado con exito'
+            ]);
+        }
     }
 
     private function validaToken($token){
@@ -96,4 +138,79 @@ class SolicitudRequerimientoController extends Controller
             }
         }
     }
+
+
+    public function solicitudAgente(Request $request){
+        //validamos el token enviado
+        if ($this->validaToken($request->input('token'))){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Tiempo de sesión ha terminado'
+            ]);
+        }
+
+        /*if ($this->obtieneIdUsuario($request->input('email')) == null){
+            return  response()->json([
+                'respuesta' => false,
+                'mensaje' => 'Usuario no autorizado para el registro'
+            ]);
+        }*/
+
+
+        $requerimiento = new Requerimiento();
+        $requerimiento->descripcion = $request->input('descripcion');
+        $requerimiento->interno = $request->input('interno');
+        // $requerimiento->media = $request->input('media');
+        $requerimiento->usuario_id_usuario = $request->input('usuario_id_usuario');
+        $requerimiento->departamento_id_departamento = $request->input('departamento_id_departamento');
+        $requerimiento->tipo_requerimiento_id_tipo_req = $request->input('tipo_requerimiento_id_tipo_req');
+        $requerimiento->sucursal_id_sucursal = $request->input('sucursal_id_sucursal');
+        $respuesta = $requerimiento->save();
+
+        if ($respuesta){
+            //a la par se crea el TIcket en espera
+            $ticket = new Ticket();
+            //momentaneo
+            $ticket->numero = $this->generarCodigo();
+            $ticket->estado_id_estado = Estado::EN_ESPERA;/*$requerimiento->estado_id_estado;*/
+            $ticket->requerimiento_id_requerimiento = $requerimiento->id_requerimiento;
+            //TODO
+            $ticket->comentarios = '';
+            $respuesta = $ticket->save();
+           $detalles = [
+                'titulo' => 'Confirmación',
+                'body' => "Su solicitud fue creada con éxito, con la descripción: $requerimiento->descripcion.Se le mandará un correo cuando un agente haya tomado su Requerimiento.",
+                'descripcion' =>"El número de su ticket es: $ticket->numero"
+            ];
+            \Mail::to($request->input('email'))->send(new \App\Mail\InvoiceMail($detalles));
+
+            if ($respuesta){
+                return response()->json([
+                    'respuesta' => true,
+                    'requerimiento' => $requerimiento
+                ]);
+            }
+            return response()->json([
+                'respuesta' => true,
+                'mensaje' => 'Error al guardar los datos en la Base de Datos'
+            ]);
+
+        }
+        return response()->json([
+            'respuesta' => false,
+            'mensaje' => 'Error al guardar los datos en la Base de Datos'
+        ]);
+    }
+    public function adicionarImagen(Requerimiento $requerimiento, Request $request)
+    {
+        $this->validate($request, [
+            'imagen' => 'required'
+        ]);
+        $conexion->adicionaImagen($request->imagen);
+        return response()->json(['data' => $requerimiento], 201);
+    }
+    
 }
+
+
+

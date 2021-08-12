@@ -11,22 +11,39 @@ use Illuminate\Support\Facades\Validator;
 use Namshi\JOSE\SimpleJWS;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+use Illuminate\Support\Facades\Crypt;
+
 class UsuarioController extends Controller
 {
     public $loginAfterSignUp = true;
 
     public function registro(Request $request)
     {
+        // $this->validate($request, [
+        //     'nombre' => ['required'],
+        //     'ap_paterno' => ['required'],
+        //     'ap_materno' => ['nullable'],
+        //     'ci' => [],
+        //     'email' => ['required'],
+        //     'password' => ['required'],
+            
+            
+        // ]);
         $usuario = new User();
         $usuario->nombre = $request->input('nombre');
         $usuario->ap_paterno = $request->input('ap_paterno');
         $usuario->ap_materno = $request->input('ap_materno');
+        $usuario->ci = $request->input('ci');
         $usuario->email = $request->input('email');
         $usuario->password = bcrypt($request->input('password'));
         $usuario->rol_id_rol = Rol::FUNCIONARIO;
         $usuario->cargo_id_cargo = $request->input('cargo_id_cargo');
         $usuario->division_id_division = Division::OTROS;
+      
+
         $usuario->save();
+         
+        
 
         if ($this->loginAfterSignUp) return $this->login($request);
         return  response()->json([
@@ -35,22 +52,74 @@ class UsuarioController extends Controller
         ]);
     }
 
+    // public function generarContrasenha (Request $request){
+    //     $usuarios=User::all();
+    //     foreach($usuarios as $usuario){
+    //         $pass = 'Mda'. $usuario->ci;
+    //         $usuario->password =bcrypt($pass)->input('password');
+
+    //         $usuario->save();
+    //     }
+    // }
+    // public function login(Request $request)
+    // {
+    //     $input = $request->only('email', 'password');
+    //     $jwt_token = null;
+    //     if (!$jwt_token = JWTAuth::attempt($input)){
+    //         return  response()->json([
+    //             'respuesta' => false,
+    //             'mensaje' => 'Correo o contraseña no válidos'
+    //         ]);
+    //     }
+    //     return response()->json([
+    //         'respuesta' => true,
+    //         'mensaje' => 'Inicio de sesion autorizado',
+    //         'token' => $jwt_token,
+    //     ]);
+    // }
+
     public function login(Request $request)
     {
+       //buscar id
+    $user= User::where('email', '=' , $request->input('email'))->first();  
+    
+      if($user->password == NULL){
+        $pass ='Mda'. $user->ci;
+        // $user->password = bcrypt($request->input('Mda123456'));
+        $user->password = bcrypt($pass);
+        // return $user->toSql();
+        $user->save();
+    }
+    // return response()->json([
+    //     'respuestas'=>true,
+    //     'mensaje'=>'contraseña correcta',
+    //     'usuarios'=> $user,
+    // ]) ;  
+           
+       
+    // $cadenaDesencriptada = Crypt::decryptString('$2y$10$5DBjdbg7hZhjzXS1t7tsle1NVhwLVwzwpfQh2Zv8F5BSBoYMGRpx6');
+    // return $cadenaDesencriptada;
+
         $input = $request->only('email', 'password');
         $jwt_token = null;
+
         if (!$jwt_token = JWTAuth::attempt($input)){
             return  response()->json([
                 'respuesta' => false,
                 'mensaje' => 'Correo o contraseña no válidos'
             ]);
         }
+       
+
         return response()->json([
             'respuesta' => true,
             'mensaje' => 'Inicio de sesion autorizado',
             'token' => $jwt_token,
         ]);
+
+       
     }
+
 
     public function logout(Request $request){
         $this->validate($request, [
@@ -129,6 +198,7 @@ class UsuarioController extends Controller
         $user->ap_paterno = $request->input('ap_paterno');
         $user->ap_materno = $request->input('ap_materno');
         $user->ap_materno = $request->input('ap_materno');
+        $user->ci = $request->input('ci');
         $user->rol_id_rol = $request->input('rol_id_rol');
         $user->cargo_id_cargo = $request->input('cargo_id_cargo');
         $user->division_id_division = $request->input('division_id_division');
@@ -164,12 +234,26 @@ class UsuarioController extends Controller
         else return $usuario->id_usuario;
     }
 
+    public function listarAgentes()
+    {
+        $agentes = User::where('rol_id_rol', Rol::AGENTE)
+            ->where('baja_logica', false)
+            ->orderBy('ap_paterno')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'agentes' => $agentes
+        ]);
+    }
+
+
     public function registroAdmin(Request $request)
     {
         $usuario = new User();
         $usuario->nombre = $request->input('nombre');
         $usuario->ap_paterno = $request->input('ap_paterno');
         $usuario->ap_materno = $request->input('ap_materno');
+        $usuario->ci = $request->input('ci');
         $usuario->email = $request->input('email');
         $usuario->password = bcrypt($request->input('password'));
         $usuario->rol_id_rol = $request->input('rol_id_rol');
@@ -181,6 +265,15 @@ class UsuarioController extends Controller
         return  response()->json([
             'respuesta' => true,
             'usuario' => $usuario
+        ]);
+    }
+    public function usuarios(){
+        $usuario = User::where('baja_logica', false)
+            ->orderBy('id_usuario', 'asc')
+            ->get();
+        return response()->json([
+            'respuesta' => true,
+            'usuarios' => $usuario
         ]);
     }
 

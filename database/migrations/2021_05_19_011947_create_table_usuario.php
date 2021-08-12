@@ -19,7 +19,7 @@ class CreateTableUsuario extends Migration
             $table->string('ap_paterno');
             $table->string('ap_materno')->nullable();
             $table->string('email')->unique();
-            $table->string('password');
+            $table->string('password')->nullable();
             $table->string('unidad');
             $table->bigInteger('rol_id')->unsigned();
             $table->foreign('rol_id')->references('id')->on('rol');

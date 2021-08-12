@@ -11,16 +11,13 @@ class Ticket extends Model
     protected $table = 'public.ticket';
     protected $primaryKey = 'id_ticket';
     public $timestamps = false;
-
     protected $fillable = ['numero', 'estado_id_estado', 'requerimiento_id_requerimiento', 'comentarios', 'id_padre', 'activo', 'fecha_registro'];
     protected $hidden = [
         'baja_logica', 'usuario_registro', 'ip_registro'
     ];
-
     const ACTIVO = true;
     const INACTIVO = false;
-
-    public static function listadoTikets(){
+    public static function listadoTikets($idDivision){
         return DB::connection('help')->select(
             "SELECT a.id_ticket,
                             a.numero,
@@ -40,17 +37,58 @@ class Ticket extends Model
                             b.descripcion,
                             (select departamento from public.departamento where b.departamento_id_departamento = id_departamento limit 1) departamento,
                             (select sucursal from public.sucursal where b.sucursal_id_sucursal = id_sucursal limit 1) sucursal,
-                            e.nombre || ' ' || e.ap_paterno || ' ' || e.ap_materno as usuario_requerimiento
-                    from public.ticket a        
+                             e.nombre || ' ' || e.ap_paterno || ' ' || e.ap_materno as usuario_requerimiento,
+                            f.prioridad_id_prioridad id_prioridad,
+                            (select prioridad from public.prioridad where id_prioridad = f.prioridad_id_prioridad) prioridad,
+                        b.archivo,b.interno
+                    from public.ticket a
                     inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
                     inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
                     inner join public.categoria d on c.categoria_id_categoria = d.id_categoria
                     inner join public.usuario e on b.usuario_id_usuario = e.id_usuario
+                    inner join public.cargo f on e.cargo_id_cargo = f.id_cargo
                     where a.baja_logica is false and a.activo is true
-                    order by 10 desc"
+                    and e.division_id_division = ?
+                    order by a.estado_id_estado, f.prioridad_id_prioridad DESC, b.fecha_registro desc", [$idDivision]
+        );
+    }
+    public static function listadoTiketsAdmin(){
+        return DB::connection('help')->select(
+            "SELECT a.id_ticket,
+                            a.numero,
+                            d.categoria,
+                            c.sub_cat,
+                            a.estado_id_estado,
+                            (select estado from public.estado where id_estado = a.estado_id_estado limit 1) estado,
+                            c.division_id_division,
+                            (select division from public.division where id_division = c.division_id_division limit 1),
+                            a.fecha_registro fecha_ticket,
+                            b.fecha_registro fecha_solicitud,
+                            (select y.nombre || ' ' || y.ap_paterno || ' ' || y.ap_materno
+                            from public.asignado x
+                            inner join  public.usuario y on x.usuario_id_usuario = y.id_usuario
+                            where x.ticket_id_ticket = a.id_ticket
+                            limit 1) usuario,
+                            b.descripcion,
+                            (select departamento from public.departamento where b.departamento_id_departamento = id_departamento limit 1) departamento,
+                            (select sucursal from public.sucursal where b.sucursal_id_sucursal = id_sucursal limit 1) sucursal,
+                             e.nombre || ' ' || e.ap_paterno || ' ' || e.ap_materno as usuario_requerimiento,
+                            f.prioridad_id_prioridad id_prioridad,
+                            (select prioridad from public.prioridad where id_prioridad = f.prioridad_id_prioridad) prioridad,
+                        b.archivo,b.interno
+                    from public.ticket a
+                    inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
+                    inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
+                    inner join public.categoria d on c.categoria_id_categoria = d.id_categoria
+                    inner join public.usuario e on b.usuario_id_usuario = e.id_usuario
+                    inner join public.cargo f on e.cargo_id_cargo = f.id_cargo
+                    where a.baja_logica is false and a.activo is true
+                    
+                    order by a.estado_id_estado, f.prioridad_id_prioridad DESC, b.fecha_registro desc"
         );
     }
 
+    
     public static function usuarioTicket($idTicket){
         return DB::connection('help')->select(
             "select y.nombre || ' ' || y.ap_paterno as usuario
@@ -60,65 +98,150 @@ class Ticket extends Model
                     limit 1", [$idTicket]
         );
     }
-
     public static function listadoTicketFuncionario($idUsuario){
         return DB::connection('help')->select(
             "SELECT a.id_ticket,
-                            a.numero,
-                            d.categoria,
-                            c.sub_cat,
-                            a.estado_id_estado,
-
-                            g.prioridad,
-                            h.prioridad_id_prioridad,
-
-                            (select estado from public.estado where id_estado = a.estado_id_estado limit 1) estado,
-                            c.division_id_division,
-                            (select division from public.division where id_division = c.division_id_division limit 1),
-                            a.fecha_registro::date fecha_ticket,
-                            b.fecha_registro::Date fecha_solicitud,
-                            (select y.nombre || ' ' || y.ap_paterno 
-                            from public.asignado x
-                            inner join  public.usuario y on x.usuario_id_usuario = y.id_usuario
-                            where x.ticket_id_ticket = a.id_ticket
-                            limit 1) usuario,
-                            b.descripcion,
-                            (select departamento from public.departamento where b.departamento_id_departamento = id_departamento limit 1) departamento,
-                            (select sucursal from public.sucursal where b.sucursal_id_sucursal = id_sucursal limit 1) sucursal,
-                            
-                            (select prioridad from public.prioridad where h.prioridad_id_prioridad =id_prioridad limit 1) prioridad,
-                            from public.cargo h on y cargo_id_cargo = h.id_cargo 
-
-                    from public.ticket a        
-                    inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
-                    inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
-                    inner join public.categoria d on c.categoria_id_categoria = d.id_categoria
-                    inner join public.usuario e on b.usuario_id_usuario = e.id_usuario
-
-                    inner join public.prioirdad g on h.prioridad_id_prioridad= g.id_prioridad
-
-                    where a.baja_logica is false
-                    and a.activo is true 
-                    and b.usuario_id_usuario = ?
-                    order by 2 desc", [$idUsuario]
+             a.numero,
+                    d.categoria,
+                    c.sub_cat,
+                    a.estado_id_estado,
+                    (select estado from public.estado where id_estado = a.estado_id_estado limit 1) estado,
+                    c.division_id_division,
+                    (select division from public.division where id_division = c.division_id_division limit 1),
+                    a.fecha_registro::date fecha_ticket,
+                    b.fecha_registro::Date fecha_solicitud,
+                    (select y.nombre || ' ' || y.ap_paterno
+                    from public.asignado x
+                    inner join  public.usuario y on x.usuario_id_usuario = y.id_usuario
+                    where x.ticket_id_ticket = a.id_ticket
+                    limit 1) usuario,
+                    b.descripcion,
+                    (select departamento from public.departamento where b.departamento_id_departamento = id_departamento limit 1) departamento,
+                    (select sucursal from public.sucursal where b.sucursal_id_sucursal = id_sucursal limit 1) sucursal
+            from public.ticket a
+            inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
+            inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
+            inner join public.categoria d on c.categoria_id_categoria = d.id_categoria
+            inner join public.usuario e on b.usuario_id_usuario = e.id_usuario
+            where a.baja_logica is false
+            and a.activo is true
+            and b.usuario_id_usuario = ?
+            order by b.fecha_registro desc", [$idUsuario]
         );
     }
-
     public static function historial($numero){
         return DB::connection('help')->select(
-            "(select a.numero, a.estado_id_estado, a.requerimiento_id_requerimiento,
-                            a.fecha_registro, a.comentarios, a.activo,
-                            c.nombre, c.ap_paterno, c.ap_materno
+            "(select 
+            a.id_ticket,
+            a.numero, 
+            a.estado_id_estado,
+            a.requerimiento_id_requerimiento,
+            a.fecha_registro, 
+            a.comentarios, 
+            a.activo,
+            c.nombre, 
+            c.ap_paterno, 
+            c.ap_materno, 
+            c.id_usuario,
+ 			pri.prioridad,
+            pri.id_prioridad
+            
+                from public.ticket a
+ 				inner join public.requerimiento rq on a.requerimiento_id_requerimiento =rq.id_requerimiento
+                inner join public.asignado b on a.id_ticket = b.ticket_id_ticket
+                inner join public.usuario c on b.usuario_id_usuario = c.id_usuario
+ 
+				inner join cargo ca on c.cargo_id_cargo = ca.id_cargo
+				inner join prioridad pri on ca.prioridad_id_prioridad=pri.id_prioridad
+ 
+                where a.numero = ? and b.baja_logica is false)
+                 union
+                (select 
+                a.id_ticket, 
+                a.numero, 
+                a.estado_id_estado, 
+                a.requerimiento_id_requerimiento,
+                a.fecha_registro, 
+                a.comentarios, 
+                a.activo,
+                NULL, 
+                null, 
+                null, 
+                null,
+				pri.prioridad,
+                pri.id_prioridad
                     from public.ticket a
-                    inner join public.asignado b on a.id_ticket = b.ticket_id_ticket
-                    inner join public.usuario c on b.usuario_id_usuario = c.id_usuario
-                    where a.numero = ?)
-                    union 
-                    (select a.numero, a.estado_id_estado, a.requerimiento_id_requerimiento,
-                            a.fecha_registro, a.comentarios, a.activo, NULL, null, null
-                    from public.ticket a
+                    inner join public.requerimiento rq on a.requerimiento_id_requerimiento =rq.id_requerimiento
+                    inner join public.usuario c on rq.usuario_id_usuario = c.id_usuario
+                    inner join cargo ca on c.cargo_id_cargo = ca.id_cargo
+				    inner join prioridad pri on ca.prioridad_id_prioridad=pri.id_prioridad
                     where a.numero = ? and a.id_padre is null)
                     order by fecha_registro", [$numero, $numero]
         );
     }
+
+    
+    public static function ticketsProceso(){
+        return DB::connection('help')->select(
+            "SELECT 
+                      a.id_ticket,
+                      a.numero,
+                      a.requerimiento_id_requerimiento,
+                      a.comentarios,
+                      b.usuario_id_usuario,
+                      c.email,
+                      c.nombre,
+                      c.ap_paterno,
+                      c.ap_materno,
+                      EXTRACT(DAY FROM age(timestamp 'now()',date(a.fecha_registro))) as dias_pasados
+                    FROM public.ticket a
+                    inner join public.asignado b on a.id_ticket = b.ticket_id_ticket
+                    inner join public.usuario c on b.usuario_id_usuario = c.id_usuario
+                    where a.estado_id_estado = ?
+                    and a.baja_logica is false
+                    and a.activo is true", [ Estado::EN_PROCESO ]
+        );
+    }
+
+    public static function ticketsEnEspera(){
+        return DB::connection('help')->select(
+            "SELECT 
+                      a.id_ticket,
+                      a.numero,
+                      a.requerimiento_id_requerimiento,
+                      a.comentarios,  
+                      d.email,
+                      d.nombre,
+                      d.ap_paterno,
+                      d.ap_materno,
+                      EXTRACT(DAY FROM age(timestamp 'now()',date(a.fecha_registro))) as dias_pasados
+                    FROM public.ticket a
+                    inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
+                    inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
+                    inner join public.usuario d on c.division_id_division = d.division_id_division
+                    where a.estado_id_estado = ?
+                    and a.baja_logica is false
+                    and a.activo is true;", [ Estado::EN_ESPERA ]
+        );
+    }
+    // public static function filtroDivision (){
+    //     return DB::connection('help')->select(
+    //         "SELECT 
+    //             a.id_ticket,
+    //             a.numero,
+    //             a.requerimiento_id_requerimiento,
+    //             d.email,
+    //             d.nombre,
+    //             d.ap_paterno,
+    //             d.ap_materno,
+    //             f.division
+    //             FROM public.ticket a
+    //             inner join public.requerimiento b on a.requerimiento_id_requerimiento = b.id_requerimiento
+    //             inner join public.tipo_requerimiento c on b.tipo_requerimiento_id_tipo_req = c.id_tipo_req
+    //             inner join public.usuario d on c.division_id_division = d.division_id_division
+    //             inner join public.division f on d.division_id_division= f.id_division
+    //             inner join public.rol e on  d.rol_id_rol= e.id_rol;"
+    //     );
+    // }
+
 }

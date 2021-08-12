@@ -13,7 +13,7 @@ class Usuario extends Model
     public $timestamps = false;
 
     protected $fillable = ['nombre', 'ap_paterno', 'ap_materno', 'email', 'password', 'rol_id_rol', 'cargo_id_cargo'];
-    protected $hidden = ['password'];
+    // protected $hidden = ['password'];
 
     /*
        Añadiremos estos dos métodos
