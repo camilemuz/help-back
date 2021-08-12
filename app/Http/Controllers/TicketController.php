@@ -27,6 +27,15 @@ class TicketController extends Controller
         ]);
     }
 
+    public function listadoReqAdmin(){
+        $tickets = Ticket::listadoTikets();
+        return response()->json([
+            'respuesta' => true,
+            'tickets' => $tickets
+        ]);
+    }
+
+
     public function editar(Request $request){
         $ticket = Ticket::findOrFail($request->id);
         $ticket->baja_logica = true;

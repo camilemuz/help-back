@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Validator;
 use Namshi\JOSE\SimpleJWS;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
+use Illuminate\Support\Facades\Crypt;
+
 class UsuarioController extends Controller
 {
     public $loginAfterSignUp = true;
@@ -78,13 +80,16 @@ class UsuarioController extends Controller
 
     public function login(Request $request)
     {
-       
-    //   $user= User::where('email', '=' , $request->input('email'))->first();
-    // //   if($user->password == NULL){
-    //     // $pass = 'Mda'. $usuarios->ci;
-    //     $user->password = bcrypt($request->input('Mda123456'));
-    //     $user->save();
-    // // }
+       //buscar id
+    $user= User::where('email', '=' , $request->input('email'))->first();  
+    
+      if($user->password == NULL){
+        $pass ='Mda'. $user->ci;
+        // $user->password = bcrypt($request->input('Mda123456'));
+        $user->password = bcrypt($pass);
+        // return $user->toSql();
+        $user->save();
+    }
     // return response()->json([
     //     'respuestas'=>true,
     //     'mensaje'=>'contraseña correcta',
@@ -92,7 +97,8 @@ class UsuarioController extends Controller
     // ]) ;  
            
        
-           
+    // $cadenaDesencriptada = Crypt::decryptString('$2y$10$5DBjdbg7hZhjzXS1t7tsle1NVhwLVwzwpfQh2Zv8F5BSBoYMGRpx6');
+    // return $cadenaDesencriptada;
 
         $input = $request->only('email', 'password');
         $jwt_token = null;

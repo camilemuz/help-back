@@ -79,6 +79,7 @@ Route::group(['prefix' => 'funcionario'], function() {
 });
 Route::group(['prefix' => 'agente'], function() {
     Route::post('tickets', 'TicketController@listadoReq');
+    Route::post('tickets-admin', 'TicketController@listadoReqAdmin');
     Route::post('elegir_ticket', 'TicketController@elegirTicket');
     Route::post('tomar_ticket', 'TicketController@tomarTicket');
     Route::post('terminar_ticket', 'TicketController@terminarTicket');
